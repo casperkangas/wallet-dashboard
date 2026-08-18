@@ -81,6 +81,25 @@ JavaFX
 
 SQLite
 
+## SQLite database location
+
+The database must never be stored in the project root.
+
+The application must determine the database path automatically.
+
+macOS:
+~/Library/Application Support/WalletDashboard/
+
+Windows:
+%APPDATA%/WalletDashboard/
+
+Linux:
+~/.local/share/WalletDashboard/
+
+Database filename:
+
+wallet_dashboard.db
+
 ---
 
 ## HTTP

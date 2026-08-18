@@ -438,3 +438,15 @@ The AI assistant must:
 All generated code must follow PROJECT_SPEC.md exactly.
 
 When uncertain, the AI must ask for clarification instead of making assumptions.
+
+## 16. Build requirements
+
+The project must use the Maven Wrapper.
+
+Never use:
+
+mvn
+
+Always use:
+
+./mvnw

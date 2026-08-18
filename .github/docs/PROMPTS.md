@@ -52,3 +52,23 @@ Verify:
 Do not rewrite the code.
 
 Only report problems.
+
+## Builds
+
+Build commands must always use the Maven Wrapper.
+
+Allowed:
+
+./mvnw clean
+
+./mvnw test
+
+./mvnw package
+
+Forbidden:
+
+mvn clean
+
+mvn test
+
+mvn package

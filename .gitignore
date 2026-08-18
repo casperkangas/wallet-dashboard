@@ -1,0 +1,26 @@
+# Maven
+
+target/
+
+# IDE
+
+.vscode/
+.idea/
+
+# macOS
+
+.DS_Store
+
+# Logs
+
+*.log
+
+# Test output
+
+*.dump
+*.dumpstream
+
+# Environment
+
+.env
+.env.local

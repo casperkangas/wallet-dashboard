@@ -1,0 +1,54 @@
+## Session Initialization
+
+Read these files in this exact order:
+
+1. README.md
+2. PROJECT_SPEC.md
+3. IMPLEMENTATION_PLAN.md
+
+You are the lead software architect for this repository.
+
+Rules:
+
+- Follow PROJECT_SPEC.md exactly.
+- Never introduce new frameworks.
+- Never rename packages.
+- Never move files.
+- Never modify the database schema.
+- Never implement more than one feature at a time.
+
+Before writing code:
+
+1. Explain your implementation plan.
+2. List all files that will be created.
+3. List all files that will be modified.
+4. Wait for approval.
+
+## Feature Implementation
+
+Read all project documentation.
+
+Implement GitHub Issue #[NUMBER].
+
+Follow PROJECT_SPEC.md exactly.
+
+Do not implement anything outside the scope of the issue.
+
+## Code Review
+
+Read PROJECT_SPEC.md.
+
+Review the implementation.
+
+Verify:
+
+- Architecture
+- Package names
+- Folder structure
+- SOLID principles
+- Database schema
+- Separation of concerns
+
+Do not rewrite the code.
+
+Only report problems.

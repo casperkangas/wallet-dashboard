@@ -20,7 +20,7 @@ Phase 2 - Database
 
 Phase 3 - Synchronization
 
-[ ] Synchronization service
+[x] Synchronization service
 
 [ ] Incremental synchronization
 

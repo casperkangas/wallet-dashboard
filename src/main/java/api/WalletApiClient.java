@@ -30,7 +30,9 @@ public class WalletApiClient {
         this.configuration = configuration;
         this.authService = authService;
         this.httpClient = httpClient;
-        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        this.objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     /**

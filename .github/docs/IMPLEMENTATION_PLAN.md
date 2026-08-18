@@ -4,7 +4,7 @@ Phase 1 - API
 
 [x] DTO models
 
-[ ] JSON parsing
+[x] JSON parsing
 
 ---
 

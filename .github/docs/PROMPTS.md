@@ -3,8 +3,8 @@
 Read these files in this exact order:
 
 1. README.md
-2. PROJECT_SPEC.md
-3. IMPLEMENTATION_PLAN.md
+2. .github/docs/PROJECT_SPEC.md
+3. .github/docs/IMPLEMENTATION_PLAN.md
 
 You are the lead software architect for this repository.
 

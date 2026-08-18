@@ -10,9 +10,9 @@ Phase 1 - API
 
 Phase 2 - Database
 
-[ ] SQLite setup
+[x] SQLite setup
 
-[ ] Database migrations
+[x] Database migrations
 
 [ ] Repository layer
 

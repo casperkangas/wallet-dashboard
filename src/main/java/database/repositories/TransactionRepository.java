@@ -115,7 +115,7 @@ public class TransactionRepository {
         stmt.setString(1, transaction.id());
         stmt.setString(2, transaction.accountId());
         stmt.setString(3, transaction.categoryId());
-        stmt.setDouble(4, transaction.amount() != null ? transaction.amount().doubleValue() : 0.0);
+        stmt.setString(4, transaction.amount() != null ? transaction.amount().toPlainString() : null);
         stmt.setString(5, transaction.currency());
         stmt.setString(6, transaction.transactionDate() != null ? transaction.transactionDate().toString() : null);
         stmt.setString(7, transaction.description());
@@ -131,11 +131,12 @@ public class TransactionRepository {
         String cDateStr = rs.getString("created_at");
         LocalDateTime cDate = cDateStr != null ? LocalDateTime.parse(cDateStr) : null;
         
+        String amountStr = rs.getString("amount");
         return new Transaction(
             rs.getString("id"),
             rs.getString("account_id"),
             rs.getString("category_id"),
-            BigDecimal.valueOf(rs.getDouble("amount")),
+            amountStr != null ? new BigDecimal(amountStr) : BigDecimal.ZERO,
             rs.getString("currency"),
             tDate,
             rs.getString("description"),

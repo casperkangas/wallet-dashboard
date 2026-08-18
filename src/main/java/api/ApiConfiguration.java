@@ -17,6 +17,12 @@ public class ApiConfiguration {
     }
 
     public ApiConfiguration(String baseUrl, String apiKey) {
+        if (baseUrl == null || baseUrl.isBlank()) {
+            throw new IllegalArgumentException("baseUrl must not be null or blank");
+        }
+        if (apiKey == null || apiKey.isBlank()) {
+            throw new IllegalArgumentException("apiKey must not be null or blank");
+        }
         this.baseUrl = baseUrl;
         this.apiKey = apiKey;
     }
@@ -27,7 +33,9 @@ public class ApiConfiguration {
             Path envPath = Paths.get(".env");
             if (Files.exists(envPath)) {
                 Properties props = new Properties();
-                props.load(Files.newInputStream(envPath));
+                try (var inputStream = Files.newInputStream(envPath)) {
+                    props.load(inputStream);
+                }
                 String key = props.getProperty("WALLET_API_KEY");
                 if (key != null && !key.trim().isEmpty()) {
                     return key.trim();

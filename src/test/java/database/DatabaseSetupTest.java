@@ -59,5 +59,6 @@ class DatabaseSetupTest {
         assertTrue(tables.contains("categories"), "Categories table should exist");
         assertTrue(tables.contains("budgets"), "Budgets table should exist");
         assertTrue(tables.contains("daily_snapshots"), "Daily snapshots table should exist");
+        assertTrue(tables.contains("schema_version"), "Schema version table should exist");
     }
 }

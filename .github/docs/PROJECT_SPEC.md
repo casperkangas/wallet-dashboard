@@ -2,7 +2,7 @@
 
 # Wallet Dashboard - Technical Specification
 
-Version: 1.0
+Version: 1.1
 
 ---
 
@@ -29,12 +29,18 @@ Synchronization Layer
       ↓
 SQLite Database
       ↓
+Service Layer
+      ↓
 Analytics Engine
       ↓
 Forecasting Engine
       ↓
 JavaFX Dashboard
 ```
+
+The Service Layer bridges the database repositories and the UI.
+
+UI controllers must never access repositories directly.
 
 ---
 
@@ -99,6 +105,12 @@ Linux:
 Database filename:
 
 wallet_dashboard.db
+
+## SQLite data precision
+
+Monetary values must be stored as INTEGER (cents) or TEXT to preserve BigDecimal precision.
+
+Do not use REAL for financial amounts.
 
 ---
 
@@ -269,6 +281,32 @@ Synchronization modes:
 - Startup
 
 Synchronization must use timestamps to avoid unnecessary API requests.
+
+---
+
+# 8.1 Services module
+
+Package:
+
+```text
+services/
+```
+
+Required classes:
+
+```text
+DashboardService
+TransactionService
+BudgetService
+```
+
+Responsibilities:
+
+- Provide data to UI controllers from repositories
+- Perform aggregation and transformation logic
+- Keep business logic out of UI controllers
+
+UI controllers must depend on services, never on repositories directly.
 
 ---
 

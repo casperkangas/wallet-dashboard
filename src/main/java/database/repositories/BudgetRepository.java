@@ -30,7 +30,7 @@ public class BudgetRepository {
             
             stmt.setString(1, budget.id());
             stmt.setString(2, budget.categoryId());
-            stmt.setDouble(3, budget.limitAmount() != null ? budget.limitAmount().doubleValue() : 0.0);
+            stmt.setString(3, budget.limitAmount() != null ? budget.limitAmount().toPlainString() : null);
             stmt.setString(4, budget.period());
             
             stmt.executeUpdate();
@@ -51,7 +51,7 @@ public class BudgetRepository {
                 for (Budget budget : budgets) {
                     stmt.setString(1, budget.id());
                     stmt.setString(2, budget.categoryId());
-                    stmt.setDouble(3, budget.limitAmount() != null ? budget.limitAmount().doubleValue() : 0.0);
+                    stmt.setString(3, budget.limitAmount() != null ? budget.limitAmount().toPlainString() : null);
                     stmt.setString(4, budget.period());
                     stmt.addBatch();
                 }
@@ -97,10 +97,11 @@ public class BudgetRepository {
     }
 
     private Budget mapResultSet(ResultSet rs) throws SQLException {
+        String limitAmountStr = rs.getString("limit_amount");
         return new Budget(
             rs.getString("id"),
             rs.getString("category_id"),
-            BigDecimal.valueOf(rs.getDouble("limit_amount")),
+            limitAmountStr != null ? new BigDecimal(limitAmountStr) : BigDecimal.ZERO,
             rs.getString("period")
         );
     }

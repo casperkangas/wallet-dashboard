@@ -32,7 +32,7 @@ public class AccountRepository {
             stmt.setString(1, account.id());
             stmt.setString(2, account.name());
             stmt.setString(3, account.currency());
-            stmt.setDouble(4, account.balance() != null ? account.balance().doubleValue() : 0.0);
+            stmt.setString(4, account.balance() != null ? account.balance().toPlainString() : null);
             stmt.setString(5, account.institution());
             stmt.setString(6, account.updatedAt() != null ? account.updatedAt().toString() : null);
             
@@ -55,7 +55,7 @@ public class AccountRepository {
                     stmt.setString(1, account.id());
                     stmt.setString(2, account.name());
                     stmt.setString(3, account.currency());
-                    stmt.setDouble(4, account.balance() != null ? account.balance().doubleValue() : 0.0);
+                    stmt.setString(4, account.balance() != null ? account.balance().toPlainString() : null);
                     stmt.setString(5, account.institution());
                     stmt.setString(6, account.updatedAt() != null ? account.updatedAt().toString() : null);
                     stmt.addBatch();
@@ -121,11 +121,12 @@ public class AccountRepository {
         String updatedAtStr = rs.getString("updated_at");
         LocalDateTime updatedAt = updatedAtStr != null ? LocalDateTime.parse(updatedAtStr) : null;
         
+        String balanceStr = rs.getString("balance");
         return new Account(
             rs.getString("id"),
             rs.getString("name"),
             rs.getString("currency"),
-            BigDecimal.valueOf(rs.getDouble("balance")),
+            balanceStr != null ? new BigDecimal(balanceStr) : BigDecimal.ZERO,
             rs.getString("institution"),
             updatedAt
         );

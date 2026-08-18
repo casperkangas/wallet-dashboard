@@ -31,12 +31,12 @@ public class DailySnapshotRepository {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, snapshot.snapshotDate() != null ? snapshot.snapshotDate().toString() : null);
-            stmt.setDouble(2, snapshot.netWorth() != null ? snapshot.netWorth().doubleValue() : 0.0);
-            stmt.setDouble(3, snapshot.cash() != null ? snapshot.cash().doubleValue() : 0.0);
-            stmt.setDouble(4, snapshot.investments() != null ? snapshot.investments().doubleValue() : 0.0);
-            stmt.setDouble(5, snapshot.debt() != null ? snapshot.debt().doubleValue() : 0.0);
-            stmt.setDouble(6, snapshot.monthlyIncome() != null ? snapshot.monthlyIncome().doubleValue() : 0.0);
-            stmt.setDouble(7, snapshot.monthlyExpenses() != null ? snapshot.monthlyExpenses().doubleValue() : 0.0);
+            stmt.setString(2, snapshot.netWorth() != null ? snapshot.netWorth().toPlainString() : null);
+            stmt.setString(3, snapshot.cash() != null ? snapshot.cash().toPlainString() : null);
+            stmt.setString(4, snapshot.investments() != null ? snapshot.investments().toPlainString() : null);
+            stmt.setString(5, snapshot.debt() != null ? snapshot.debt().toPlainString() : null);
+            stmt.setString(6, snapshot.monthlyIncome() != null ? snapshot.monthlyIncome().toPlainString() : null);
+            stmt.setString(7, snapshot.monthlyExpenses() != null ? snapshot.monthlyExpenses().toPlainString() : null);
             
             stmt.executeUpdate();
         }
@@ -56,12 +56,12 @@ public class DailySnapshotRepository {
             try {
                 for (DailySnapshot snapshot : snapshots) {
                     stmt.setString(1, snapshot.snapshotDate() != null ? snapshot.snapshotDate().toString() : null);
-                    stmt.setDouble(2, snapshot.netWorth() != null ? snapshot.netWorth().doubleValue() : 0.0);
-                    stmt.setDouble(3, snapshot.cash() != null ? snapshot.cash().doubleValue() : 0.0);
-                    stmt.setDouble(4, snapshot.investments() != null ? snapshot.investments().doubleValue() : 0.0);
-                    stmt.setDouble(5, snapshot.debt() != null ? snapshot.debt().doubleValue() : 0.0);
-                    stmt.setDouble(6, snapshot.monthlyIncome() != null ? snapshot.monthlyIncome().doubleValue() : 0.0);
-                    stmt.setDouble(7, snapshot.monthlyExpenses() != null ? snapshot.monthlyExpenses().doubleValue() : 0.0);
+                    stmt.setString(2, snapshot.netWorth() != null ? snapshot.netWorth().toPlainString() : null);
+                    stmt.setString(3, snapshot.cash() != null ? snapshot.cash().toPlainString() : null);
+                    stmt.setString(4, snapshot.investments() != null ? snapshot.investments().toPlainString() : null);
+                    stmt.setString(5, snapshot.debt() != null ? snapshot.debt().toPlainString() : null);
+                    stmt.setString(6, snapshot.monthlyIncome() != null ? snapshot.monthlyIncome().toPlainString() : null);
+                    stmt.setString(7, snapshot.monthlyExpenses() != null ? snapshot.monthlyExpenses().toPlainString() : null);
                     stmt.addBatch();
                 }
                 stmt.executeBatch();
@@ -109,14 +109,21 @@ public class DailySnapshotRepository {
         String dateStr = rs.getString("snapshot_date");
         LocalDate date = dateStr != null ? LocalDate.parse(dateStr) : null;
         
+        String netWorthStr = rs.getString("net_worth");
+        String cashStr = rs.getString("cash");
+        String investmentsStr = rs.getString("investments");
+        String debtStr = rs.getString("debt");
+        String monthlyIncomeStr = rs.getString("monthly_income");
+        String monthlyExpensesStr = rs.getString("monthly_expenses");
+        
         return new DailySnapshot(
             date,
-            BigDecimal.valueOf(rs.getDouble("net_worth")),
-            BigDecimal.valueOf(rs.getDouble("cash")),
-            BigDecimal.valueOf(rs.getDouble("investments")),
-            BigDecimal.valueOf(rs.getDouble("debt")),
-            BigDecimal.valueOf(rs.getDouble("monthly_income")),
-            BigDecimal.valueOf(rs.getDouble("monthly_expenses"))
+            netWorthStr != null ? new BigDecimal(netWorthStr) : BigDecimal.ZERO,
+            cashStr != null ? new BigDecimal(cashStr) : BigDecimal.ZERO,
+            investmentsStr != null ? new BigDecimal(investmentsStr) : BigDecimal.ZERO,
+            debtStr != null ? new BigDecimal(debtStr) : BigDecimal.ZERO,
+            monthlyIncomeStr != null ? new BigDecimal(monthlyIncomeStr) : BigDecimal.ZERO,
+            monthlyExpensesStr != null ? new BigDecimal(monthlyExpensesStr) : BigDecimal.ZERO
         );
     }
 }

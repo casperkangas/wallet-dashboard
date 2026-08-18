@@ -14,7 +14,7 @@ Phase 2 - Database
 
 [x] Database migrations
 
-[ ] Repository layer
+[x] Repository layer
 
 ---
 

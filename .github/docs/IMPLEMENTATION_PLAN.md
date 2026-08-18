@@ -1,8 +1,8 @@
 Phase 1 - API
 
-[ ] API authentication
+[x] API authentication
 
-[ ] DTO models
+[x] DTO models
 
 [ ] JSON parsing
 

@@ -17,13 +17,6 @@ Rules:
 - Never modify the database schema.
 - Never implement more than one feature at a time.
 
-Before writing code:
-
-1. Explain your implementation plan.
-2. List all files that will be created.
-3. List all files that will be modified.
-4. Wait for approval.
-
 ## Feature Implementation
 
 Read all project documentation.

@@ -22,7 +22,7 @@ Phase 3 - Synchronization
 
 [x] Synchronization service
 
-[ ] Incremental synchronization
+[x] Incremental synchronization
 
 ---
 

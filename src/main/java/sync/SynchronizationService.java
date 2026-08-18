@@ -2,14 +2,10 @@ package sync;
 
 import api.WalletApiClient;
 import api.ApiException;
-import database.repositories.AccountRepository;
 import database.repositories.BudgetRepository;
 import database.repositories.CategoryRepository;
-import database.repositories.TransactionRepository;
-import models.Account;
 import models.Budget;
 import models.Category;
-import models.Transaction;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -19,22 +15,19 @@ public class SynchronizationService {
     private static final Logger LOGGER = Logger.getLogger(SynchronizationService.class.getName());
 
     private final WalletApiClient apiClient;
-    private final AccountRepository accountRepository;
     private final CategoryRepository categoryRepository;
     private final BudgetRepository budgetRepository;
-    private final TransactionRepository transactionRepository;
+    private final IncrementalSynchronizer incrementalSynchronizer;
 
     public SynchronizationService(
             WalletApiClient apiClient,
-            AccountRepository accountRepository,
             CategoryRepository categoryRepository,
             BudgetRepository budgetRepository,
-            TransactionRepository transactionRepository) {
+            IncrementalSynchronizer incrementalSynchronizer) {
         this.apiClient = apiClient;
-        this.accountRepository = accountRepository;
         this.categoryRepository = categoryRepository;
         this.budgetRepository = budgetRepository;
-        this.transactionRepository = transactionRepository;
+        this.incrementalSynchronizer = incrementalSynchronizer;
     }
 
     public void syncAll() throws SynchronizationException {
@@ -45,15 +38,7 @@ public class SynchronizationService {
     }
 
     public void syncAccounts() throws SynchronizationException {
-        try {
-            Account[] accounts = apiClient.get("/accounts", Account[].class);
-            if (accounts != null && accounts.length > 0) {
-                accountRepository.saveAll(Arrays.asList(accounts));
-                LOGGER.info("Successfully synchronized " + accounts.length + " accounts.");
-            }
-        } catch (ApiException | SQLException e) {
-            throw new SynchronizationException("Failed to synchronize accounts", e);
-        }
+        incrementalSynchronizer.syncAccountsIncrementally();
     }
 
     public void syncCategories() throws SynchronizationException {
@@ -81,15 +66,6 @@ public class SynchronizationService {
     }
 
     public void syncTransactions() throws SynchronizationException {
-        try {
-            // Note: The Wallet API uses /records for transactions
-            Transaction[] transactions = apiClient.get("/records", Transaction[].class);
-            if (transactions != null && transactions.length > 0) {
-                transactionRepository.saveAll(Arrays.asList(transactions));
-                LOGGER.info("Successfully synchronized " + transactions.length + " transactions.");
-            }
-        } catch (ApiException | SQLException e) {
-            throw new SynchronizationException("Failed to synchronize transactions", e);
-        }
+        incrementalSynchronizer.syncTransactionsIncrementally();
     }
 }

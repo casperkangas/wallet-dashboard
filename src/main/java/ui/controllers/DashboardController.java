@@ -3,20 +3,20 @@ package ui.controllers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import services.DashboardService;
+import utils.CurrencyFormatter;
 
 import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.util.Locale;
+import java.util.Map;
 
 public class DashboardController {
 
     @FXML private Label lblTotalBalance;
-    @FXML private Label lblInvestmentBalance;
-    @FXML private Label lblDebtBalance;
     @FXML private Label lblSavingsRate;
-    @FXML private Label lblAccountCount;
     @FXML private Label lblBudgetRemaining;
+    @FXML private FlowPane dynamicWidgetsContainer;
 
     private final DashboardService dashboardService;
 
@@ -35,29 +35,59 @@ public class DashboardController {
         new Thread(() -> {
             try {
                 BigDecimal totalBalance = dashboardService.calculateTotalBalance();
-                BigDecimal investmentBalance = dashboardService.getInvestmentBalance();
-                BigDecimal debtBalance = dashboardService.getDebtBalance();
                 String savingsRate = dashboardService.getMonthlySavingsRate();
-                int accountCount = dashboardService.getAccountCount();
+                Map<String, BigDecimal> balancesByType = dashboardService.getBalancesByType();
                 
-                // Format balances
-                NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(Locale.US);
-
                 Platform.runLater(() -> {
-                    lblTotalBalance.setText(currencyFormat.format(totalBalance));
-                    lblInvestmentBalance.setText(currencyFormat.format(investmentBalance));
-                    lblDebtBalance.setText(currencyFormat.format(debtBalance));
+                    lblTotalBalance.setText(CurrencyFormatter.format(totalBalance, "EUR"));
                     lblSavingsRate.setText(savingsRate);
-                    lblAccountCount.setText(String.valueOf(accountCount));
                     lblBudgetRemaining.setText("WIP"); // Budget logic will come in Phase 4.5
+                    
+                    dynamicWidgetsContainer.getChildren().clear();
+                    
+                    // Add dynamic widgets
+                    for (Map.Entry<String, BigDecimal> entry : balancesByType.entrySet()) {
+                        String type = entry.getKey();
+                        BigDecimal balance = entry.getValue();
+                        
+                        VBox widget = new VBox();
+                        widget.getStyleClass().add("widget-card");
+                        widget.setMinWidth(200);
+                        
+                        Label titleLabel = new Label(formatAccountTypeTitle(type));
+                        titleLabel.getStyleClass().add("widget-title");
+                        
+                        Label balanceLabel = new Label(CurrencyFormatter.format(balance, "EUR"));
+                        balanceLabel.getStyleClass().add("widget-value");
+                        
+                        if (balance.compareTo(BigDecimal.ZERO) < 0 || type.toLowerCase().contains("debt") || type.toLowerCase().contains("loan") || type.toLowerCase().contains("credit")) {
+                            balanceLabel.getStyleClass().add("widget-negative");
+                        }
+                        
+                        widget.getChildren().addAll(titleLabel, balanceLabel);
+                        dynamicWidgetsContainer.getChildren().add(widget);
+                    }
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     lblTotalBalance.setText("Error");
-                    lblAccountCount.setText("-");
                 });
                 e.printStackTrace();
             }
         }).start();
+    }
+    
+    private String formatAccountTypeTitle(String type) {
+        if (type == null) return "Unknown";
+        // Prettify common BudgetBakers types
+        return switch (type) {
+            case "CurrentAccount" -> "Checking Balance";
+            case "CreditCard" -> "Credit Card Debt";
+            case "SavingsAccount" -> "Savings Balance";
+            case "Cash" -> "Available Cash";
+            case "Loan" -> "Outstanding Loans";
+            case "Investment" -> "Investment Balance";
+            default -> type + " Balance";
+        };
     }
 }

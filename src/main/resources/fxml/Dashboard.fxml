@@ -16,37 +16,24 @@
     </HBox>
     
     <GridPane hgap="20" vgap="20">
-        <!-- Row 1 -->
-        <VBox styleClass="widget-card" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
+        <!-- Static Top Row -->
+        <VBox styleClass="widget-card" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT" minWidth="200">
             <Label text="Total Balance (Net Worth)" styleClass="widget-title"/>
-            <Label fx:id="lblTotalBalance" text="\$0.00" styleClass="widget-value, widget-positive"/>
+            <Label fx:id="lblTotalBalance" text="-" styleClass="widget-value, widget-positive"/>
         </VBox>
         
-        <VBox styleClass="widget-card" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
-            <Label text="Investment Balance" styleClass="widget-title"/>
-            <Label fx:id="lblInvestmentBalance" text="\$0.00" styleClass="widget-value"/>
-        </VBox>
-        
-        <VBox styleClass="widget-card" GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
-            <Label text="Debt" styleClass="widget-title"/>
-            <Label fx:id="lblDebtBalance" text="\$0.00" styleClass="widget-value, widget-negative"/>
-        </VBox>
-        
-        <!-- Row 2 -->
-        <VBox styleClass="widget-card" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
+        <VBox styleClass="widget-card" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT" minWidth="200">
             <Label text="Savings Rate (This Month)" styleClass="widget-title"/>
             <Label fx:id="lblSavingsRate" text="0%" styleClass="widget-value"/>
         </VBox>
 
-        <VBox styleClass="widget-card" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
-            <Label text="Active Accounts" styleClass="widget-title"/>
-            <Label fx:id="lblAccountCount" text="0" styleClass="widget-value"/>
-        </VBox>
-        
-        <VBox styleClass="widget-card" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
+        <VBox styleClass="widget-card" GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT" minWidth="200">
             <Label text="Budget Remaining" styleClass="widget-title"/>
-            <Label fx:id="lblBudgetRemaining" text="-" styleClass="widget-value"/>
+            <Label fx:id="lblBudgetRemaining" text="WIP" styleClass="widget-value"/>
         </VBox>
     </GridPane>
+    
+    <Label text="Accounts by Type" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <FlowPane fx:id="dynamicWidgetsContainer" hgap="20" vgap="20" />
     
 </VBox>

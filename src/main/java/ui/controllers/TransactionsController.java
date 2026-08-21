@@ -15,7 +15,9 @@ import javafx.scene.control.*;
 import models.Account;
 import models.Category;
 import models.Transaction;
+import utils.CurrencyFormatter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,9 @@ import java.util.stream.Collectors;
 public class TransactionsController {
 
     @FXML private TextField txtSearch;
+    @FXML private DatePicker dpStartDate;
+    @FXML private DatePicker dpEndDate;
+    @FXML private ComboBox<String> cmbCategory;
     @FXML private ComboBox<String> cmbAccount;
     @FXML private ComboBox<String> cmbType;
     @FXML private TableView<TransactionViewModel> tblTransactions;
@@ -31,7 +36,7 @@ public class TransactionsController {
     @FXML private TableColumn<TransactionViewModel, String> colAccount;
     @FXML private TableColumn<TransactionViewModel, String> colCategory;
     @FXML private TableColumn<TransactionViewModel, String> colDescription;
-    @FXML private TableColumn<TransactionViewModel, String> colAmount;
+    @FXML private TableColumn<TransactionViewModel, BigDecimal> colAmount;
 
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
@@ -50,6 +55,29 @@ public class TransactionsController {
     public void initialize() {
         cmbType.setItems(FXCollections.observableArrayList("All Types", "Income", "Expense"));
         cmbType.getSelectionModel().selectFirst();
+        
+        // Setup custom cell factory for the Amount column to format it correctly
+        colAmount.setCellFactory(column -> new TableCell<TransactionViewModel, BigDecimal>() {
+            @Override
+            protected void updateItem(BigDecimal item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    TransactionViewModel tvm = getTableView().getItems().get(getIndex());
+                    setText(CurrencyFormatter.format(item, tvm.getTransaction().currency()));
+                    
+                    // Add styling for income/expense
+                    if (item.compareTo(BigDecimal.ZERO) < 0) {
+                        setStyle("-fx-text-fill: #e74c3c;"); // red
+                    } else if (item.compareTo(BigDecimal.ZERO) > 0) {
+                        setStyle("-fx-text-fill: #2ecc71;"); // green
+                    } else {
+                        setStyle("");
+                    }
+                }
+            }
+        });
         
         loadData();
     }
@@ -81,10 +109,15 @@ public class TransactionsController {
                 Platform.runLater(() -> {
                     masterData.setAll(viewModels);
                     
-                    List<String> accountNames = accounts.stream().map(Account::name).collect(Collectors.toList());
+                    List<String> accountNames = accounts.stream().map(Account::name).sorted().collect(Collectors.toList());
                     accountNames.add(0, "All Accounts");
                     cmbAccount.setItems(FXCollections.observableArrayList(accountNames));
                     cmbAccount.getSelectionModel().selectFirst();
+                    
+                    List<String> categoryNames = categories.stream().map(Category::name).sorted().collect(Collectors.toList());
+                    categoryNames.add(0, "All Categories");
+                    cmbCategory.setItems(FXCollections.observableArrayList(categoryNames));
+                    cmbCategory.getSelectionModel().selectFirst();
                     
                     setupFiltersAndSorting();
                 });
@@ -100,7 +133,10 @@ public class TransactionsController {
         // Add listeners
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> updateFilter(filteredData));
         cmbAccount.valueProperty().addListener((observable, oldValue, newValue) -> updateFilter(filteredData));
+        cmbCategory.valueProperty().addListener((observable, oldValue, newValue) -> updateFilter(filteredData));
         cmbType.valueProperty().addListener((observable, oldValue, newValue) -> updateFilter(filteredData));
+        dpStartDate.valueProperty().addListener((observable, oldValue, newValue) -> updateFilter(filteredData));
+        dpEndDate.valueProperty().addListener((observable, oldValue, newValue) -> updateFilter(filteredData));
 
         SortedList<TransactionViewModel> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(tblTransactions.comparatorProperty());
@@ -116,6 +152,23 @@ public class TransactionsController {
                 boolean matchesDescription = tvm.getDescription() != null && tvm.getDescription().toLowerCase().contains(lowerCaseFilter);
                 boolean matchesCategory = tvm.getCategoryName() != null && tvm.getCategoryName().toLowerCase().contains(lowerCaseFilter);
                 if (!matchesDescription && !matchesCategory) {
+                    return false;
+                }
+            }
+            
+            // Date filters
+            LocalDate start = dpStartDate.getValue();
+            LocalDate end = dpEndDate.getValue();
+            LocalDate tDate = tvm.getTransactionDate();
+            if (tDate != null) {
+                if (start != null && tDate.isBefore(start)) return false;
+                if (end != null && tDate.isAfter(end)) return false;
+            }
+            
+            // Category filter
+            String category = cmbCategory.getValue();
+            if (category != null && !"All Categories".equals(category)) {
+                if (!category.equals(tvm.getCategoryName())) {
                     return false;
                 }
             }
@@ -161,9 +214,7 @@ public class TransactionsController {
         public String getCategoryId() { return categoryName; }
         public String getCategoryName() { return categoryName; }
         public String getDescription() { return transaction.description(); }
-        public String getAmount() { 
-            return java.text.NumberFormat.getCurrencyInstance(java.util.Locale.US).format(transaction.amount());
-        }
+        public BigDecimal getAmount() { return transaction.amount(); }
         public Transaction getTransaction() { return transaction; }
     }
 }

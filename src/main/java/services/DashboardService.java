@@ -10,7 +10,9 @@ import models.Transaction;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DashboardService {
     private final AccountRepository accountRepository;
@@ -48,27 +50,24 @@ public class DashboardService {
         }
     }
 
-    public BigDecimal getInvestmentBalance() {
+    public Map<String, BigDecimal> getBalancesByType() {
         try {
-            return accountRepository.findAll().stream()
-                    .filter(a -> "Investment".equalsIgnoreCase(a.accountType()))
-                    .map(Account::balance)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            Map<String, BigDecimal> balances = new HashMap<>();
+            
+            for (Account account : accountRepository.findAll()) {
+                String type = account.accountType();
+                if (type == null || type.isEmpty()) {
+                    type = "Unknown";
+                }
+                
+                BigDecimal balance = account.balance() != null ? account.balance() : BigDecimal.ZERO;
+                balances.put(type, balances.getOrDefault(type, BigDecimal.ZERO).add(balance));
+            }
+            
+            return balances;
         } catch (Exception e) {
             e.printStackTrace();
-            return BigDecimal.ZERO;
-        }
-    }
-
-    public BigDecimal getDebtBalance() {
-        try {
-            return accountRepository.findAll().stream()
-                    .filter(a -> "Loan".equalsIgnoreCase(a.accountType()) || "CreditCard".equalsIgnoreCase(a.accountType()) || "Debt".equalsIgnoreCase(a.accountType()) || (a.balance().compareTo(BigDecimal.ZERO) < 0))
-                    .map(Account::balance)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return BigDecimal.ZERO;
+            return new HashMap<>();
         }
     }
 

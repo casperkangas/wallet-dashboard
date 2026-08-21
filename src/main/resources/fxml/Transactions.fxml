@@ -17,10 +17,13 @@
     </HBox>
 
     <!-- Toolbar for searching and filtering -->
-    <HBox spacing="15" alignment="CENTER_LEFT">
+    <HBox spacing="10" alignment="CENTER_LEFT">
         <TextField fx:id="txtSearch" promptText="Search transactions..." HBox.hgrow="ALWAYS"/>
-        <ComboBox fx:id="cmbAccount" promptText="All Accounts" prefWidth="150" />
-        <ComboBox fx:id="cmbType" promptText="All Types" prefWidth="150" />
+        <DatePicker fx:id="dpStartDate" promptText="Start Date" prefWidth="120" />
+        <DatePicker fx:id="dpEndDate" promptText="End Date" prefWidth="120" />
+        <ComboBox fx:id="cmbCategory" promptText="All Categories" prefWidth="130" />
+        <ComboBox fx:id="cmbAccount" promptText="All Accounts" prefWidth="130" />
+        <ComboBox fx:id="cmbType" promptText="All Types" prefWidth="110" />
     </HBox>
 
     <!-- Transactions Table -->

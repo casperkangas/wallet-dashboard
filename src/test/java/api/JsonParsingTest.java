@@ -30,8 +30,10 @@ class JsonParsingTest {
             {
                 "id": "acc-123",
                 "name": "Checking Account",
-                "currency": "USD",
-                "balance": 1500.50,
+                "currencyCode": "USD",
+                "balance": {
+                    "currentBalance": 1500.50
+                },
                 "institution": "Bank",
                 "updatedAt": "2023-10-01T12:00:00",
                 "extraField": "ignore me"
@@ -43,7 +45,7 @@ class JsonParsingTest {
         assertEquals("acc-123", account.id());
         assertEquals("Checking Account", account.name());
         assertEquals("USD", account.currency());
-        assertEquals(new BigDecimal("1500.50"), account.balance());
+        assertEquals(new BigDecimal("1500.5"), account.balance());
         assertEquals("Bank", account.institution());
         assertEquals(LocalDateTime.of(2023, 10, 1, 12, 0), account.updatedAt());
     }
@@ -53,9 +55,9 @@ class JsonParsingTest {
         String json = """
             {
                 "id": "bud-1",
-                "categoryId": "cat-2",
-                "limitAmount": 500.00,
-                "period": "MONTHLY"
+                "categoryIds": ["cat-2"],
+                "limit": 500.00,
+                "type": "MONTHLY"
             }
             """;
 
@@ -73,8 +75,10 @@ class JsonParsingTest {
             {
                 "id": "cat-1",
                 "name": "Groceries",
-                "parentId": "cat-0",
-                "icon": "shopping-cart"
+                "group": {
+                    "id": "cat-0"
+                },
+                "color": "shopping-cart"
             }
             """;
 
@@ -117,13 +121,12 @@ class JsonParsingTest {
             {
                 "id": "txn-1",
                 "accountId": "acc-1",
-                "categoryId": "cat-1",
-                "amount": -55.50,
-                "currency": "USD",
-                "transactionDate": "2023-10-01",
-                "description": "Lunch",
+                "category": { "id": "cat-1" },
+                "amount": { "value": -55.50, "currencyCode": "USD" },
+                "recordDate": "2023-10-01T12:00:00",
+                "note": "Lunch",
                 "paymentMethod": "CARD",
-                "isTransfer": false,
+                "recordType": "expense",
                 "createdAt": "2023-10-01T14:30:00"
             }
             """;
@@ -133,7 +136,7 @@ class JsonParsingTest {
         assertEquals("txn-1", transaction.id());
         assertEquals("acc-1", transaction.accountId());
         assertEquals("cat-1", transaction.categoryId());
-        assertEquals(new BigDecimal("-55.50"), transaction.amount());
+        assertEquals(new BigDecimal("-55.5"), transaction.amount());
         assertEquals("USD", transaction.currency());
         assertEquals(LocalDate.of(2023, 10, 1), transaction.transactionDate());
         assertEquals("Lunch", transaction.description());

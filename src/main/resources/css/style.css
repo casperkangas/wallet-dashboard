@@ -1,0 +1,82 @@
+/* Basic styles for Wallet Dashboard */
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-background-color: #f5f5f5;
+}
+
+.sidebar {
+    -fx-background-color: #2b2b2b;
+    -fx-padding: 10px 0;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cccccc;
+    -fx-alignment: center-left;
+    -fx-padding: 15px 20px;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: #3b3b3b;
+    -fx-text-fill: white;
+}
+
+.nav-button.active {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.app-title {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 15px 20px;
+}
+
+.content-pane {
+    -fx-background-color: #ffffff;
+    -fx-padding: 20px;
+}
+
+/* Dashboard Widgets */
+.widget-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-padding: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2);
+}
+
+.widget-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #757575;
+    -fx-font-weight: bold;
+}
+
+.widget-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #212121;
+}
+
+.widget-positive {
+    -fx-text-fill: #4CAF50;
+}
+
+.widget-negative {
+    -fx-text-fill: #F44336;
+}
+
+/* Sync UI */
+.sync-panel {
+    -fx-padding: 15px;
+    -fx-background-color: #e8f5e9;
+    -fx-border-color: #c8e6c9;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}

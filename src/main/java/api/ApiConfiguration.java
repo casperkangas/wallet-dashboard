@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 public class ApiConfiguration {
-    private static final String DEFAULT_BASE_URL = "https://rest.budgetbakers.com/wallet";
+    private static final String DEFAULT_BASE_URL = "https://rest.budgetbakers.com/wallet/v1/api";
     private final String baseUrl;
     private final String apiKey;
 

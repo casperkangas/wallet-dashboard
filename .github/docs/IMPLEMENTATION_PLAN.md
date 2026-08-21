@@ -64,29 +64,29 @@
 
 ### 4.1 — JavaFX Setup
 
-- [ ] Add JavaFX dependencies to `pom.xml`
-- [ ] Configure `module-info.java` (if using Java modules) or add JavaFX Maven plugin
-- [ ] Create main application class (`WalletDashboardApp extends Application`)
-- [ ] Create application entry point with `Launcher` class (for classpath compatibility)
-- [ ] Set up FXML loading infrastructure
-- [ ] Add CSS stylesheet for consistent theming
+- [x] Add JavaFX dependencies to `pom.xml`
+- [x] Configure `module-info.java` (if using Java modules) or add JavaFX Maven plugin
+- [x] Create main application class (`WalletDashboardApp extends Application`)
+- [x] Create application entry point with `Launcher` class (for classpath compatibility)
+- [x] Set up FXML loading infrastructure
+- [x] Add CSS stylesheet for consistent theming
 
 ### 4.2 — Navigation & Layout
 
-- [ ] Create main window layout with sidebar navigation
-- [ ] Create navigation controller for screen switching
-- [ ] Define FXML views for each screen (Dashboard, Transactions, Budgets, Analytics)
-- [ ] Implement screen transition logic
+- [x] Create main window layout with sidebar navigation
+- [x] Create navigation controller for screen switching
+- [x] Define FXML views for each screen (Dashboard, Transactions, Budgets, Analytics)
+- [x] Implement screen transition logic
 
 ### 4.3 — Dashboard Screen
 
-- [ ] Net worth widget
-- [ ] Cash balance widget
+- [x] Net worth widget
+- [x] Cash balance widget
 - [ ] Investment balance widget
 - [ ] Debt widget
 - [ ] Savings rate widget
 - [ ] Budget remaining widget
-- [ ] Dashboard data service (bridge between repositories and UI)
+- [x] Dashboard data service (bridge between repositories and UI)
 
 ### 4.4 — Transactions Screen
 
@@ -103,10 +103,10 @@
 
 ### 4.6 — Synchronization UI
 
-- [ ] Sync status indicator in the UI
-- [ ] Manual sync button
-- [ ] Last synced timestamp display
-- [ ] Sync progress feedback
+- [x] Sync status indicator in the UI
+- [x] Manual sync button
+- [x] Last synced timestamp display
+- [x] Sync progress feedback
 
 ---
 

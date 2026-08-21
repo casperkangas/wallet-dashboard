@@ -62,7 +62,14 @@ public class WalletApiClient {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() >= 200 && response.statusCode() < 300) {
-                return objectMapper.readValue(response.body(), responseType);
+                com.fasterxml.jackson.databind.JsonNode rootNode = objectMapper.readTree(response.body());
+                String resourceKey = endpoint.split("\\?")[0].substring(1);
+                
+                if (rootNode.has(resourceKey)) {
+                    return objectMapper.treeToValue(rootNode.get(resourceKey), responseType);
+                } else {
+                    return objectMapper.treeToValue(rootNode, responseType);
+                }
             } else {
                 throw new ApiException("API Request failed", response.statusCode(), response.body());
             }

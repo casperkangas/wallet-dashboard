@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.MainController">
+    <left>
+        <VBox styleClass="sidebar" prefWidth="250.0">
+            <Label text="Wallet Dashboard" styleClass="app-title"/>
+            
+            <VBox fx:id="navigationMenu" VBox.vgrow="ALWAYS" spacing="5">
+                <padding>
+                    <Insets top="20.0" />
+                </padding>
+                
+                <Button fx:id="btnDashboard" text="Dashboard" styleClass="nav-button" maxWidth="Infinity" onAction="#showDashboard"/>
+                <Button fx:id="btnSync" text="Synchronization" styleClass="nav-button" maxWidth="Infinity" onAction="#showSync"/>
+                
+                <!-- Placeholders for future phases -->
+                <Button text="Transactions" styleClass="nav-button" maxWidth="Infinity" disable="true"/>
+                <Button text="Budgets" styleClass="nav-button" maxWidth="Infinity" disable="true"/>
+                <Button text="Analytics" styleClass="nav-button" maxWidth="Infinity" disable="true"/>
+            </VBox>
+        </VBox>
+    </left>
+    
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-pane"/>
+    </center>
+</BorderPane>

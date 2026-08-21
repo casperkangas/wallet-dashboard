@@ -22,8 +22,8 @@ public class AccountRepository {
 
     public void save(Account account) throws SQLException {
         String sql = """
-            INSERT OR REPLACE INTO accounts (id, name, currency, balance, institution, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO accounts (id, name, currency, balance, institution, account_type, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """;
         
         try (Connection conn = connectionFactory.getConnection();
@@ -34,7 +34,8 @@ public class AccountRepository {
             stmt.setString(3, account.currency());
             stmt.setString(4, account.balance() != null ? account.balance().toPlainString() : null);
             stmt.setString(5, account.institution());
-            stmt.setString(6, account.updatedAt() != null ? account.updatedAt().toString() : null);
+            stmt.setString(6, account.accountType());
+            stmt.setString(7, account.updatedAt() != null ? account.updatedAt().toString() : null);
             
             stmt.executeUpdate();
         }
@@ -42,8 +43,8 @@ public class AccountRepository {
 
     public void saveAll(List<Account> accounts) throws SQLException {
         String sql = """
-            INSERT OR REPLACE INTO accounts (id, name, currency, balance, institution, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO accounts (id, name, currency, balance, institution, account_type, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """;
             
         try (Connection conn = connectionFactory.getConnection();
@@ -57,7 +58,8 @@ public class AccountRepository {
                     stmt.setString(3, account.currency());
                     stmt.setString(4, account.balance() != null ? account.balance().toPlainString() : null);
                     stmt.setString(5, account.institution());
-                    stmt.setString(6, account.updatedAt() != null ? account.updatedAt().toString() : null);
+                    stmt.setString(6, account.accountType());
+                    stmt.setString(7, account.updatedAt() != null ? account.updatedAt().toString() : null);
                     stmt.addBatch();
                 }
                 stmt.executeBatch();
@@ -128,6 +130,7 @@ public class AccountRepository {
             rs.getString("currency"),
             balanceStr != null ? new BigDecimal(balanceStr) : BigDecimal.ZERO,
             rs.getString("institution"),
+            rs.getString("account_type"),
             updatedAt
         );
     }

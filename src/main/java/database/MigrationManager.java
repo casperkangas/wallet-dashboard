@@ -89,6 +89,11 @@ public class MigrationManager {
                 
                 recordMigration(conn, 1);
             }
+            
+            if (currentVersion < 2) {
+                stmt.execute("ALTER TABLE accounts ADD COLUMN account_type TEXT;");
+                recordMigration(conn, 2);
+            }
         }
     }
 

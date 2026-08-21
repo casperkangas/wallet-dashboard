@@ -15,6 +15,7 @@ public record Account(
     String currency,
     BigDecimal balance,
     String institution,
+    String accountType,
     LocalDateTime updatedAt
 ) {
     @JsonCreator
@@ -24,6 +25,7 @@ public record Account(
         @JsonProperty("currencyCode") String currency,
         @JsonProperty("balance") JsonNode balanceNode,
         @JsonProperty("institution") String institution,
+        @JsonProperty("accountType") String accountType,
         @JsonProperty("updatedAt") LocalDateTime updatedAt
     ) {
         BigDecimal parsedBalance = BigDecimal.ZERO;
@@ -36,6 +38,6 @@ public record Account(
                 parsedBalance = new BigDecimal(balanceNode.asText());
             }
         }
-        return new Account(id, name, currency, parsedBalance, institution, updatedAt);
+        return new Account(id, name, currency, parsedBalance, institution, accountType, updatedAt);
     }
 }

@@ -31,18 +31,34 @@ public class IncrementalSynchronizer {
 
     public void syncAccountsIncrementally() throws SynchronizationException {
         try {
-            Optional<LocalDateTime> lastUpdated = accountRepository.getLastUpdated();
-            String endpoint = "/accounts";
+            boolean forceFullSync = accountRepository.findAll().stream().anyMatch(a -> a.accountType() == null);
+            Optional<LocalDateTime> lastUpdated = forceFullSync ? Optional.empty() : accountRepository.getLastUpdated();
             
+            String baseEndpoint = "/accounts?limit=200";
             if (lastUpdated.isPresent()) {
-                endpoint += "?updatedAt=gt." + lastUpdated.get().toString();
+                baseEndpoint += "&updatedAt=gt." + lastUpdated.get().toString();
                 LOGGER.info("Fetching accounts updated after " + lastUpdated.get());
+            } else {
+                LOGGER.info("Performing full sync of accounts...");
             }
 
-            Account[] accounts = apiClient.get(endpoint, Account[].class);
-            if (accounts != null && accounts.length > 0) {
-                accountRepository.saveAll(Arrays.asList(accounts));
-                LOGGER.info("Incrementally synchronized " + accounts.length + " accounts.");
+            int offset = 0;
+            int totalSynced = 0;
+            Account[] accounts;
+            
+            do {
+                String endpoint = baseEndpoint + "&offset=" + offset;
+                accounts = apiClient.get(endpoint, Account[].class);
+                
+                if (accounts != null && accounts.length > 0) {
+                    accountRepository.saveAll(Arrays.asList(accounts));
+                    totalSynced += accounts.length;
+                    offset += 200;
+                }
+            } while (accounts != null && accounts.length == 200);
+
+            if (totalSynced > 0) {
+                LOGGER.info("Synchronized " + totalSynced + " accounts.");
             } else {
                 LOGGER.info("No new accounts to synchronize.");
             }
@@ -53,19 +69,34 @@ public class IncrementalSynchronizer {
 
     public void syncTransactionsIncrementally() throws SynchronizationException {
         try {
-            Optional<LocalDateTime> lastUpdated = transactionRepository.getLastUpdated();
-            // Note: The Wallet API uses /records for transactions
-            String endpoint = "/records";
+            boolean forceFullSync = transactionRepository.findAll().size() <= 30;
+            Optional<LocalDateTime> lastUpdated = forceFullSync ? Optional.empty() : transactionRepository.getLastUpdated();
             
+            String baseEndpoint = "/records?limit=200";
             if (lastUpdated.isPresent()) {
-                endpoint += "?createdAt=gt." + lastUpdated.get().toString();
+                baseEndpoint += "&createdAt=gt." + lastUpdated.get().toString();
                 LOGGER.info("Fetching transactions created after " + lastUpdated.get());
+            } else {
+                LOGGER.info("Performing full sync of historical transactions...");
             }
 
-            Transaction[] transactions = apiClient.get(endpoint, Transaction[].class);
-            if (transactions != null && transactions.length > 0) {
-                transactionRepository.saveAll(Arrays.asList(transactions));
-                LOGGER.info("Incrementally synchronized " + transactions.length + " transactions.");
+            int offset = 0;
+            int totalSynced = 0;
+            Transaction[] transactions;
+            
+            do {
+                String endpoint = baseEndpoint + "&offset=" + offset;
+                transactions = apiClient.get(endpoint, Transaction[].class);
+                
+                if (transactions != null && transactions.length > 0) {
+                    transactionRepository.saveAll(Arrays.asList(transactions));
+                    totalSynced += transactions.length;
+                    offset += 200;
+                }
+            } while (transactions != null && transactions.length == 200);
+
+            if (totalSynced > 0) {
+                LOGGER.info("Synchronized " + totalSynced + " transactions.");
             } else {
                 LOGGER.info("No new transactions to synchronize.");
             }

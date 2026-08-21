@@ -82,18 +82,18 @@
 
 - [x] Net worth widget
 - [x] Cash balance widget
-- [ ] Investment balance widget
-- [ ] Debt widget
-- [ ] Savings rate widget
-- [ ] Budget remaining widget
+- [x] Investment balance widget
+- [x] Debt widget
+- [x] Savings rate widget
+- [x] Budget remaining widget
 - [x] Dashboard data service (bridge between repositories and UI)
 
 ### 4.4 — Transactions Screen
 
-- [ ] Transaction list view with table
-- [ ] Search functionality
-- [ ] Filtering by date range, category, account
-- [ ] Sorting by date, amount, category
+- [x] Transaction list view with table
+- [x] Search functionality
+- [x] Filtering by date range, category, account
+- [x] Sorting by date, amount, category
 
 ### 4.5 — Budget Screen
 

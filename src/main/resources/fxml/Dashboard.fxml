@@ -6,31 +6,47 @@
 
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.DashboardController" spacing="20">
     <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
+        <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label text="Overview" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Overview" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS" />
+        <Button text="Refresh Data" onAction="#loadData" style="-fx-padding: 8 15;" />
+    </HBox>
     
-    <HBox spacing="20">
-        <!-- Total Balance Widget -->
-        <VBox styleClass="widget-card" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
-            <Label text="Total Balance" styleClass="widget-title"/>
+    <GridPane hgap="20" vgap="20">
+        <!-- Row 1 -->
+        <VBox styleClass="widget-card" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
+            <Label text="Total Balance (Net Worth)" styleClass="widget-title"/>
             <Label fx:id="lblTotalBalance" text="\$0.00" styleClass="widget-value, widget-positive"/>
         </VBox>
         
-        <!-- Active Accounts Widget -->
-        <VBox styleClass="widget-card" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+        <VBox styleClass="widget-card" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
+            <Label text="Investment Balance" styleClass="widget-title"/>
+            <Label fx:id="lblInvestmentBalance" text="\$0.00" styleClass="widget-value"/>
+        </VBox>
+        
+        <VBox styleClass="widget-card" GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
+            <Label text="Debt" styleClass="widget-title"/>
+            <Label fx:id="lblDebtBalance" text="\$0.00" styleClass="widget-value, widget-negative"/>
+        </VBox>
+        
+        <!-- Row 2 -->
+        <VBox styleClass="widget-card" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
+            <Label text="Savings Rate (This Month)" styleClass="widget-title"/>
+            <Label fx:id="lblSavingsRate" text="0%" styleClass="widget-value"/>
+        </VBox>
+
+        <VBox styleClass="widget-card" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
             <Label text="Active Accounts" styleClass="widget-title"/>
             <Label fx:id="lblAccountCount" text="0" styleClass="widget-value"/>
         </VBox>
         
-        <!-- Placeholder -->
-        <VBox styleClass="widget-card" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
-            <Label text="Monthly Spending" styleClass="widget-title"/>
-            <Label text="-" styleClass="widget-value"/>
+        <VBox styleClass="widget-card" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" alignment="CENTER_LEFT">
+            <Label text="Budget Remaining" styleClass="widget-title"/>
+            <Label fx:id="lblBudgetRemaining" text="-" styleClass="widget-value"/>
         </VBox>
-    </HBox>
-    
-    <Button text="Refresh Data" onAction="#loadData" />
+    </GridPane>
     
 </VBox>

@@ -35,6 +35,7 @@ class JsonParsingTest {
                     "currentBalance": 1500.50
                 },
                 "institution": "Bank",
+                "accountType": "Cash",
                 "updatedAt": "2023-10-01T12:00:00",
                 "extraField": "ignore me"
             }
@@ -47,6 +48,7 @@ class JsonParsingTest {
         assertEquals("USD", account.currency());
         assertEquals(new BigDecimal("1500.5"), account.balance());
         assertEquals("Bank", account.institution());
+        assertEquals("Cash", account.accountType());
         assertEquals(LocalDateTime.of(2023, 10, 1, 12, 0), account.updatedAt());
     }
 

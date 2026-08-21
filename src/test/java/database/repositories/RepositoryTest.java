@@ -52,7 +52,7 @@ class RepositoryTest {
     void testAccountRepositorySaveAndFind() throws SQLException {
         AccountRepository repo = new AccountRepository(testConnectionFactory);
         Account acc = new Account(
-            "acc-1", "Test Account", "USD", new BigDecimal("100.5"), "TestBank", LocalDateTime.of(2023, 10, 1, 10, 0)
+            "acc-1", "Test Account", "USD", new BigDecimal("100.5"), "TestBank", "Cash", LocalDateTime.of(2023, 10, 1, 10, 0)
         );
 
         repo.save(acc);

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.TransactionsController" spacing="10">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="Transactions" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS" />
+        <Button text="Refresh" onAction="#loadData" style="-fx-padding: 8 15;" />
+    </HBox>
+
+    <!-- Toolbar for searching and filtering -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <TextField fx:id="txtSearch" promptText="Search transactions..." HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="cmbAccount" promptText="All Accounts" prefWidth="150" />
+        <ComboBox fx:id="cmbType" promptText="All Types" prefWidth="150" />
+    </HBox>
+
+    <!-- Transactions Table -->
+    <TableView fx:id="tblTransactions" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colDate" text="Date" prefWidth="100">
+                <cellValueFactory><PropertyValueFactory property="transactionDate" /></cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="colAccount" text="Account" prefWidth="150">
+                <cellValueFactory><PropertyValueFactory property="accountId" /></cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="colCategory" text="Category" prefWidth="150">
+                <cellValueFactory><PropertyValueFactory property="categoryId" /></cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="colDescription" text="Description" prefWidth="250">
+                <cellValueFactory><PropertyValueFactory property="description" /></cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="colAmount" text="Amount" prefWidth="100">
+                <cellValueFactory><PropertyValueFactory property="amount" /></cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+
+</VBox>

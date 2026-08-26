@@ -26,6 +26,26 @@ public class WalletDashboardApp extends Application {
             Scene scene = new Scene(root, 1000, 700);
             scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
             
+            // Set App Icon
+            try {
+                // JavaFX Window Icon (Windows/Linux)
+                primaryStage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/images/app-icon.jpg")));
+                
+                // macOS Dock Icon (when running un-packaged)
+                if (java.awt.Taskbar.isTaskbarSupported()) {
+                    java.awt.Taskbar taskbar = java.awt.Taskbar.getTaskbar();
+                    if (taskbar.isSupported(java.awt.Taskbar.Feature.ICON_IMAGE)) {
+                        java.net.URL iconUrl = getClass().getResource("/images/app-icon.jpg");
+                        if (iconUrl != null) {
+                            java.awt.Image icon = java.awt.Toolkit.getDefaultToolkit().getImage(iconUrl);
+                            taskbar.setIconImage(icon);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Could not set app icon: " + e.getMessage());
+            }
+            
             primaryStage.setTitle("Wallet Dashboard");
             primaryStage.setScene(scene);
             primaryStage.setMinWidth(800);

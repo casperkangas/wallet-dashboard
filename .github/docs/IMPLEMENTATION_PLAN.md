@@ -41,6 +41,7 @@
 - [x] Fix `REAL` storage for monetary values — store as `TEXT` to preserve `BigDecimal` precision
 - [x] Add schema versioning to `MigrationManager` (version tracking table, incremental migration support)
 - [x] Fix resource leak in `ApiConfiguration.loadApiKey()` — use try-with-resources for `InputStream`
+- [x] Fix incremental sync logic (`updatedAt` filtering for records and full sync for accounts to fix stale dashboard balances)
 
 ### Important
 

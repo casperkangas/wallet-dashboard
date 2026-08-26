@@ -39,35 +39,63 @@ public class DashboardController {
 
     public DashboardController() {
         this.dashboardService = new DashboardService();
-        
-        try {
-            ApiConfiguration apiConfig = new ApiConfiguration();
-            AuthenticationService authService = new AuthenticationService(apiConfig);
-            WalletApiClient apiClient = new WalletApiClient(apiConfig, authService);
-            
-            DatabaseConfiguration dbConfig = new DatabaseConfiguration();
-            ConnectionFactory connectionFactory = new ConnectionFactory(dbConfig);
-            
-            AccountRepository accountRepo = new AccountRepository(connectionFactory);
-            TransactionRepository transactionRepo = new TransactionRepository(connectionFactory);
-            CategoryRepository categoryRepo = new CategoryRepository(connectionFactory);
-            BudgetRepository budgetRepo = new BudgetRepository(connectionFactory);
-            
-            IncrementalSynchronizer incrementalSync = new IncrementalSynchronizer(
-                apiClient, accountRepo, transactionRepo
-            );
-            
-            this.syncService = new SynchronizationService(
-                apiClient, categoryRepo, budgetRepo, incrementalSync
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
     public void initialize() {
-        loadData();
+        initializeServices();
+    }
+
+    private void initializeServices() {
+        try {
+            ApiConfiguration apiConfig = new ApiConfiguration();
+            
+            if (apiConfig.getApiKey() == null || apiConfig.getApiKey().isBlank()) {
+                Platform.runLater(() -> {
+                    javafx.scene.control.TextInputDialog dialog = new javafx.scene.control.TextInputDialog();
+                    dialog.setTitle("API Key Required");
+                    dialog.setHeaderText("Welcome to Wallet Dashboard!\nTo sync your data, please provide your BudgetBakers API key.");
+                    dialog.setContentText("API Key:");
+                    
+                    java.util.Optional<String> result = dialog.showAndWait();
+                    if (result.isPresent() && !result.get().isBlank()) {
+                        apiConfig.saveApiKey(result.get());
+                        setupServices(apiConfig);
+                        loadData();
+                    } else {
+                        if (lblSyncStatus != null) lblSyncStatus.setText("API Key missing. Operating offline.");
+                        fetchAndDisplayData();
+                    }
+                });
+            } else {
+                setupServices(apiConfig);
+                loadData();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fetchAndDisplayData();
+        }
+    }
+
+    private void setupServices(ApiConfiguration apiConfig) {
+        AuthenticationService authService = new AuthenticationService(apiConfig);
+        WalletApiClient apiClient = new WalletApiClient(apiConfig, authService);
+        
+        DatabaseConfiguration dbConfig = new DatabaseConfiguration();
+        ConnectionFactory connectionFactory = new ConnectionFactory(dbConfig);
+        
+        AccountRepository accountRepo = new AccountRepository(connectionFactory);
+        TransactionRepository transactionRepo = new TransactionRepository(connectionFactory);
+        CategoryRepository categoryRepo = new CategoryRepository(connectionFactory);
+        BudgetRepository budgetRepo = new BudgetRepository(connectionFactory);
+        
+        IncrementalSynchronizer incrementalSync = new IncrementalSynchronizer(
+            apiClient, accountRepo, transactionRepo
+        );
+        
+        this.syncService = new SynchronizationService(
+            apiClient, categoryRepo, budgetRepo, incrementalSync
+        );
     }
 
     @FXML

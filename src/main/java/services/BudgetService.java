@@ -39,10 +39,34 @@ public class BudgetService {
             for (Budget budget : budgets) {
                 BigDecimal spent = BigDecimal.ZERO;
                 
+                // Determine the active period for this budget
+                LocalDate periodStart = now.withDayOfMonth(1);
+                LocalDate periodEnd = now.withDayOfMonth(now.lengthOfMonth());
+                
+                if (budget.period() != null && budget.period().equals("BUDGET_CUSTOM")) {
+                    if (budget.startDate() != null && !budget.startDate().isBlank()) {
+                        periodStart = LocalDate.parse(budget.startDate());
+                    }
+                    if (budget.endDate() != null && !budget.endDate().isBlank()) {
+                        periodEnd = LocalDate.parse(budget.endDate());
+                    }
+                } else if (budget.closed()) {
+                    if (budget.closedDate() != null && !budget.closedDate().isBlank()) {
+                        LocalDate closedDate = LocalDate.parse(budget.closedDate());
+                        periodStart = closedDate.withDayOfMonth(1);
+                        periodEnd = closedDate.withDayOfMonth(closedDate.lengthOfMonth());
+                    } else {
+                        // If it's closed but we don't know when, we can't accurately calculate progress
+                        // Skip adding any transactions so it shows 0 spent.
+                        periodStart = LocalDate.MAX;
+                        periodEnd = LocalDate.MIN;
+                    }
+                }
+                
                 for (Transaction t : allTransactions) {
                     if (t.transactionDate() != null 
-                        && t.transactionDate().getYear() == now.getYear() 
-                        && t.transactionDate().getMonthValue() == now.getMonthValue()) {
+                        && !t.transactionDate().isBefore(periodStart) 
+                        && !t.transactionDate().isAfter(periodEnd)) {
                         
                         if (!t.isTransfer()) {
                             boolean matchesCategory = false;

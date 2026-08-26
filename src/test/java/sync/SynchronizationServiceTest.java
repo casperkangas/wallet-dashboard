@@ -71,8 +71,8 @@ class SynchronizationServiceTest {
 
     @Test
     void syncBudgets_success() throws Exception {
-        Budget[] mockBudgets = {
-            new Budget("1", "Test Budget", "cat1", BigDecimal.valueOf(100), "monthly", false)
+        Budget[] mockBudgets = new Budget[]{
+            new Budget("1", "Test Budget", "cat1", new BigDecimal("500.00"), "MONTHLY", false, null, null, null)
         };
         when(apiClient.get("/budgets", Budget[].class)).thenReturn(mockBudgets);
 

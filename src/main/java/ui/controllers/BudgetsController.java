@@ -13,8 +13,7 @@ import java.util.List;
 
 public class BudgetsController {
 
-    @FXML private FlowPane activeContainer;
-    @FXML private FlowPane archivedContainer;
+    @FXML private FlowPane budgetsContainer;
     
     private final BudgetService budgetService;
 
@@ -32,10 +31,13 @@ public class BudgetsController {
             List<BudgetService.BudgetProgress> progressList = budgetService.getBudgetProgressForCurrentMonth();
             
             Platform.runLater(() -> {
-                activeContainer.getChildren().clear();
-                archivedContainer.getChildren().clear();
+                budgetsContainer.getChildren().clear();
                 
                 for (BudgetService.BudgetProgress progress : progressList) {
+                    if (progress.isClosed()) {
+                        continue;
+                    }
+                    
                     VBox card = new VBox(10);
                     card.getStyleClass().add("widget-card");
                     card.setMinWidth(300);
@@ -60,11 +62,7 @@ public class BudgetsController {
                     
                     card.getChildren().addAll(titleLabel, progressBar, detailLabel);
                     
-                    if (progress.isClosed()) {
-                        archivedContainer.getChildren().add(card);
-                    } else {
-                        activeContainer.getChildren().add(card);
-                    }
+                    budgetsContainer.getChildren().add(card);
                 }
             });
         }).start();

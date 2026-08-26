@@ -100,6 +100,13 @@ public class MigrationManager {
                 stmt.execute("ALTER TABLE budgets ADD COLUMN closed INTEGER DEFAULT 0;");
                 recordMigration(conn, 3);
             }
+            
+            if (currentVersion < 4) {
+                stmt.execute("ALTER TABLE budgets ADD COLUMN start_date TEXT;");
+                stmt.execute("ALTER TABLE budgets ADD COLUMN end_date TEXT;");
+                stmt.execute("ALTER TABLE budgets ADD COLUMN closed_date TEXT;");
+                recordMigration(conn, 4);
+            }
         }
     }
 

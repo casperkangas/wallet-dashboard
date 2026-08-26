@@ -21,8 +21,8 @@ public class BudgetRepository {
 
     public void save(Budget budget) throws SQLException {
         String sql = """
-            INSERT OR REPLACE INTO budgets (id, name, category_id, limit_amount, period, closed)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO budgets (id, name, category_id, limit_amount, period, closed, start_date, end_date, closed_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
         
         try (Connection conn = connectionFactory.getConnection();
@@ -34,6 +34,9 @@ public class BudgetRepository {
             stmt.setString(4, budget.limitAmount() != null ? budget.limitAmount().toString() : null);
             stmt.setString(5, budget.period());
             stmt.setInt(6, budget.closed() ? 1 : 0);
+            stmt.setString(7, budget.startDate());
+            stmt.setString(8, budget.endDate());
+            stmt.setString(9, budget.closedDate());
             
             stmt.executeUpdate();
         }
@@ -41,8 +44,8 @@ public class BudgetRepository {
 
     public void saveAll(List<Budget> budgets) throws SQLException {
         String sql = """
-            INSERT OR REPLACE INTO budgets (id, name, category_id, limit_amount, period, closed)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO budgets (id, name, category_id, limit_amount, period, closed, start_date, end_date, closed_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
             
         try (Connection conn = connectionFactory.getConnection();
@@ -57,6 +60,9 @@ public class BudgetRepository {
                     stmt.setString(4, budget.limitAmount() != null ? budget.limitAmount().toString() : null);
                     stmt.setString(5, budget.period());
                     stmt.setInt(6, budget.closed() ? 1 : 0);
+                    stmt.setString(7, budget.startDate());
+                    stmt.setString(8, budget.endDate());
+                    stmt.setString(9, budget.closedDate());
                     stmt.addBatch();
                 }
                 stmt.executeBatch();
@@ -109,7 +115,10 @@ public class BudgetRepository {
             rs.getString("category_id"),
             limit,
             rs.getString("period"),
-            rs.getInt("closed") == 1
+            rs.getInt("closed") == 1,
+            rs.getString("start_date"),
+            rs.getString("end_date"),
+            rs.getString("closed_date")
         );
     }
 }

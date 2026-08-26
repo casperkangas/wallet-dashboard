@@ -14,7 +14,10 @@ public record Budget(
     String categoryId,
     BigDecimal limitAmount,
     String period,
-    boolean closed
+    boolean closed,
+    String startDate,
+    String endDate,
+    String closedDate
 ) {
     @JsonCreator
     public static Budget fromJson(
@@ -23,7 +26,10 @@ public record Budget(
         @JsonProperty("categoryIds") JsonNode categoryIdsNode,
         @JsonProperty("limit") BigDecimal limitAmount,
         @JsonProperty("type") String period,
-        @JsonProperty("closed") Boolean closed
+        @JsonProperty("closed") Boolean closed,
+        @JsonProperty("startDate") String startDate,
+        @JsonProperty("endDate") String endDate,
+        @JsonProperty("closedDate") String closedDate
     ) {
         String categoryId = null;
         if (categoryIdsNode != null && categoryIdsNode.isArray() && categoryIdsNode.size() > 0) {
@@ -34,6 +40,6 @@ public record Budget(
             categoryId = String.join(",", ids);
         }
         boolean isClosed = closed != null && closed;
-        return new Budget(id, name, categoryId, limitAmount, period, isClosed);
+        return new Budget(id, name, categoryId, limitAmount, period, isClosed, startDate, endDate, closedDate);
     }
 }

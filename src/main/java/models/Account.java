@@ -30,7 +30,9 @@ public record Account(
     ) {
         BigDecimal parsedBalance = BigDecimal.ZERO;
         if (balanceNode != null) {
-            if (balanceNode.has("currentBalance")) {
+            if (balanceNode.has("rawCurrentBalance")) {
+                parsedBalance = new BigDecimal(balanceNode.get("rawCurrentBalance").asText());
+            } else if (balanceNode.has("currentBalance")) {
                 parsedBalance = new BigDecimal(balanceNode.get("currentBalance").asText());
             } else if (balanceNode.isNumber()) {
                 parsedBalance = new BigDecimal(balanceNode.asText());

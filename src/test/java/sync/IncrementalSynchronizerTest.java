@@ -43,7 +43,6 @@ class IncrementalSynchronizerTest {
 
     @Test
     void syncAccountsIncrementally_noLastUpdated() throws Exception {
-        when(accountRepository.getLastUpdated()).thenReturn(Optional.empty());
         Account[] mockAccounts = {
             new Account("1", "Cash", "USD", BigDecimal.TEN, "Bank", "Cash", LocalDateTime.now())
         };
@@ -57,16 +56,14 @@ class IncrementalSynchronizerTest {
 
     @Test
     void syncAccountsIncrementally_withLastUpdated() throws Exception {
-        LocalDateTime time = LocalDateTime.parse("2024-01-01T10:00:00");
-        when(accountRepository.getLastUpdated()).thenReturn(Optional.of(time));
         Account[] mockAccounts = {
             new Account("1", "Cash", "USD", BigDecimal.TEN, "Bank", "Cash", LocalDateTime.now())
         };
-        when(apiClient.get("/accounts?limit=200&updatedAt=gt." + time.toString() + "&offset=0", Account[].class)).thenReturn(mockAccounts);
+        when(apiClient.get("/accounts?limit=200&offset=0", Account[].class)).thenReturn(mockAccounts);
 
         synchronizer.syncAccountsIncrementally();
 
-        verify(apiClient).get("/accounts?limit=200&updatedAt=gt." + time.toString() + "&offset=0", Account[].class);
+        verify(apiClient).get("/accounts?limit=200&offset=0", Account[].class);
         verify(accountRepository).saveAll(anyList());
     }
 
@@ -97,17 +94,16 @@ class IncrementalSynchronizerTest {
         Transaction[] mockTransactions = {
             new Transaction("1", "acc1", "cat1", BigDecimal.TEN, "USD", LocalDate.now(), "desc", "card", false, LocalDateTime.now())
         };
-        when(apiClient.get("/records?limit=200&createdAt=gt." + time.toString() + "&offset=0", Transaction[].class)).thenReturn(mockTransactions);
+        when(apiClient.get("/records?limit=200&updatedAt=gt." + time.toString() + "Z&offset=0", Transaction[].class)).thenReturn(mockTransactions);
 
         synchronizer.syncTransactionsIncrementally();
 
-        verify(apiClient).get("/records?limit=200&createdAt=gt." + time.toString() + "&offset=0", Transaction[].class);
+        verify(apiClient).get("/records?limit=200&updatedAt=gt." + time.toString() + "Z&offset=0", Transaction[].class);
         verify(transactionRepository).saveAll(anyList());
     }
 
     @Test
     void syncAccountsIncrementally_apiException() throws Exception {
-        when(accountRepository.getLastUpdated()).thenReturn(Optional.empty());
         when(apiClient.get("/accounts?limit=200&offset=0", Account[].class)).thenThrow(new ApiException("Error", 500, ""));
 
         assertThrows(SynchronizationException.class, () -> synchronizer.syncAccountsIncrementally());

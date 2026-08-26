@@ -31,16 +31,8 @@ public class IncrementalSynchronizer {
 
     public void syncAccountsIncrementally() throws SynchronizationException {
         try {
-            boolean forceFullSync = accountRepository.findAll().stream().anyMatch(a -> a.accountType() == null);
-            Optional<LocalDateTime> lastUpdated = forceFullSync ? Optional.empty() : accountRepository.getLastUpdated();
-            
             String baseEndpoint = "/accounts?limit=200";
-            if (lastUpdated.isPresent()) {
-                baseEndpoint += "&updatedAt=gt." + lastUpdated.get().toString();
-                LOGGER.info("Fetching accounts updated after " + lastUpdated.get());
-            } else {
-                LOGGER.info("Performing full sync of accounts...");
-            }
+            LOGGER.info("Performing full sync of accounts to ensure correct balances...");
 
             int offset = 0;
             int totalSynced = 0;
@@ -74,8 +66,8 @@ public class IncrementalSynchronizer {
             
             String baseEndpoint = "/records?limit=200";
             if (lastUpdated.isPresent()) {
-                baseEndpoint += "&createdAt=gt." + lastUpdated.get().toString();
-                LOGGER.info("Fetching transactions created after " + lastUpdated.get());
+                baseEndpoint += "&updatedAt=gt." + lastUpdated.get().toString() + "Z";
+                LOGGER.info("Fetching transactions updated after " + lastUpdated.get() + "Z");
             } else {
                 LOGGER.info("Performing full sync of historical transactions...");
             }

@@ -12,7 +12,8 @@
     <HBox alignment="CENTER_LEFT" spacing="20">
         <Label text="Overview" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
         <Region HBox.hgrow="ALWAYS" />
-        <Button text="Refresh Data" onAction="#loadData" style="-fx-padding: 8 15;" />
+        <Label fx:id="lblSyncStatus" text="" style="-fx-text-fill: #757575;"/>
+        <Button fx:id="btnRefresh" text="Sync &amp; Refresh" onAction="#loadData" style="-fx-padding: 8 15;" />
     </HBox>
     
     <GridPane hgap="20" vgap="20">

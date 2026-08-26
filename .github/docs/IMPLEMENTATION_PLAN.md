@@ -98,9 +98,9 @@
 
 ### 4.5 — Budget Screen
 
-- [ ] Category budget list
-- [ ] Spending progress bars
-- [ ] Budget vs actual comparison
+- [x] Category budget list
+- [x] Spending progress bars
+- [x] Budget vs actual comparison
 
 ### 4.6 — Synchronization UI
 

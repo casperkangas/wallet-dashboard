@@ -80,3 +80,7 @@
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
 }
+
+.over-budget .bar {
+    -fx-background-color: #F44336;
+}

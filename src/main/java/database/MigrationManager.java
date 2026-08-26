@@ -94,6 +94,12 @@ public class MigrationManager {
                 stmt.execute("ALTER TABLE accounts ADD COLUMN account_type TEXT;");
                 recordMigration(conn, 2);
             }
+            
+            if (currentVersion < 3) {
+                stmt.execute("ALTER TABLE budgets ADD COLUMN name TEXT;");
+                stmt.execute("ALTER TABLE budgets ADD COLUMN closed INTEGER DEFAULT 0;");
+                recordMigration(conn, 3);
+            }
         }
     }
 

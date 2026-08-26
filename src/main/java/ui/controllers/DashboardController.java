@@ -11,17 +11,58 @@ import utils.CurrencyFormatter;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import javafx.scene.control.Button;
+import sync.SynchronizationService;
+import sync.IncrementalSynchronizer;
+import api.WalletApiClient;
+import api.ApiConfiguration;
+import api.AuthenticationService;
+import database.ConnectionFactory;
+import database.DatabaseConfiguration;
+import database.repositories.AccountRepository;
+import database.repositories.TransactionRepository;
+import database.repositories.CategoryRepository;
+import database.repositories.BudgetRepository;
+import javafx.concurrent.Task;
+
 public class DashboardController {
 
     @FXML private Label lblTotalBalance;
     @FXML private Label lblSavingsRate;
     @FXML private Label lblBudgetRemaining;
     @FXML private FlowPane dynamicWidgetsContainer;
+    @FXML private Button btnRefresh;
+    @FXML private Label lblSyncStatus;
 
     private final DashboardService dashboardService;
+    private SynchronizationService syncService;
 
     public DashboardController() {
         this.dashboardService = new DashboardService();
+        
+        try {
+            ApiConfiguration apiConfig = new ApiConfiguration();
+            AuthenticationService authService = new AuthenticationService(apiConfig);
+            WalletApiClient apiClient = new WalletApiClient(apiConfig, authService);
+            
+            DatabaseConfiguration dbConfig = new DatabaseConfiguration();
+            ConnectionFactory connectionFactory = new ConnectionFactory(dbConfig);
+            
+            AccountRepository accountRepo = new AccountRepository(connectionFactory);
+            TransactionRepository transactionRepo = new TransactionRepository(connectionFactory);
+            CategoryRepository categoryRepo = new CategoryRepository(connectionFactory);
+            BudgetRepository budgetRepo = new BudgetRepository(connectionFactory);
+            
+            IncrementalSynchronizer incrementalSync = new IncrementalSynchronizer(
+                apiClient, accountRepo, transactionRepo
+            );
+            
+            this.syncService = new SynchronizationService(
+                apiClient, categoryRepo, budgetRepo, incrementalSync
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -31,6 +72,36 @@ public class DashboardController {
 
     @FXML
     public void loadData() {
+        if (syncService != null && btnRefresh != null) {
+            btnRefresh.setDisable(true);
+            lblSyncStatus.setText("Syncing...");
+            
+            Task<Void> syncTask = new Task<>() {
+                @Override
+                protected Void call() throws Exception {
+                    syncService.syncAll();
+                    return null;
+                }
+            };
+            
+            syncTask.setOnSucceeded(e -> {
+                lblSyncStatus.setText("Sync successful. Loading data...");
+                fetchAndDisplayData();
+            });
+            
+            syncTask.setOnFailed(e -> {
+                btnRefresh.setDisable(false);
+                lblSyncStatus.setText("Sync failed.");
+                fetchAndDisplayData(); // Load data anyway
+            });
+            
+            new Thread(syncTask).start();
+        } else {
+            fetchAndDisplayData();
+        }
+    }
+    
+    private void fetchAndDisplayData() {
         // Run database queries on a background thread
         new Thread(() -> {
             try {
@@ -67,10 +138,19 @@ public class DashboardController {
                         widget.getChildren().addAll(titleLabel, balanceLabel);
                         dynamicWidgetsContainer.getChildren().add(widget);
                     }
+                    
+                    if (btnRefresh != null) {
+                        btnRefresh.setDisable(false);
+                    }
+                    if (lblSyncStatus != null) {
+                        lblSyncStatus.setText("");
+                    }
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     lblTotalBalance.setText("Error");
+                    if (btnRefresh != null) btnRefresh.setDisable(false);
+                    if (lblSyncStatus != null) lblSyncStatus.setText("Error loading data.");
                 });
                 e.printStackTrace();
             }

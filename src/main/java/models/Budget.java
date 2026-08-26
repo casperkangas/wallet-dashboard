@@ -10,21 +10,30 @@ import java.math.BigDecimal;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record Budget(
     String id,
+    String name,
     String categoryId,
     BigDecimal limitAmount,
-    String period
+    String period,
+    boolean closed
 ) {
     @JsonCreator
     public static Budget fromJson(
         @JsonProperty("id") String id,
+        @JsonProperty("name") String name,
         @JsonProperty("categoryIds") JsonNode categoryIdsNode,
         @JsonProperty("limit") BigDecimal limitAmount,
-        @JsonProperty("type") String period
+        @JsonProperty("type") String period,
+        @JsonProperty("closed") Boolean closed
     ) {
         String categoryId = null;
         if (categoryIdsNode != null && categoryIdsNode.isArray() && categoryIdsNode.size() > 0) {
-            categoryId = categoryIdsNode.get(0).asText();
+            java.util.List<String> ids = new java.util.ArrayList<>();
+            for (com.fasterxml.jackson.databind.JsonNode node : categoryIdsNode) {
+                ids.add(node.asText());
+            }
+            categoryId = String.join(",", ids);
         }
-        return new Budget(id, categoryId, limitAmount, period);
+        boolean isClosed = closed != null && closed;
+        return new Budget(id, name, categoryId, limitAmount, period, isClosed);
     }
 }

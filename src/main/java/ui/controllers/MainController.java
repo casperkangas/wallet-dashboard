@@ -10,21 +10,15 @@ public class MainController {
 
     @FXML private StackPane contentArea;
     @FXML private Button btnDashboard;
-    @FXML private Button btnSync;
-    
     @FXML private Button btnTransactions;
+    @FXML private Button btnBudgets;
     
     private Parent dashboardView;
-    private Parent syncView;
     private Parent transactionsView;
+    private Parent budgetsView;
     
     @FXML
     public void initialize() {
-        // Pre-load views
-        dashboardView = ViewLoader.loadView("/fxml/Dashboard.fxml");
-        syncView = ViewLoader.loadView("/fxml/SyncView.fxml");
-        transactionsView = ViewLoader.loadView("/fxml/Transactions.fxml");
-        
         // Show default
         showDashboard();
     }
@@ -32,25 +26,28 @@ public class MainController {
     @FXML
     private void showDashboard() {
         setActiveButton(btnDashboard);
+        dashboardView = ViewLoader.loadView("/fxml/Dashboard.fxml");
         contentArea.getChildren().setAll(dashboardView);
-    }
-    
-    @FXML
-    private void showSync() {
-        setActiveButton(btnSync);
-        contentArea.getChildren().setAll(syncView);
     }
     
     @FXML
     private void showTransactions() {
         setActiveButton(btnTransactions);
+        transactionsView = ViewLoader.loadView("/fxml/Transactions.fxml");
         contentArea.getChildren().setAll(transactionsView);
+    }
+    
+    @FXML
+    private void showBudgets() {
+        setActiveButton(btnBudgets);
+        budgetsView = ViewLoader.loadView("/fxml/Budgets.fxml");
+        contentArea.getChildren().setAll(budgetsView);
     }
     
     private void setActiveButton(Button activeButton) {
         btnDashboard.getStyleClass().remove("active");
-        btnSync.getStyleClass().remove("active");
         btnTransactions.getStyleClass().remove("active");
+        btnBudgets.getStyleClass().remove("active");
         activeButton.getStyleClass().add("active");
     }
 }

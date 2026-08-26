@@ -21,17 +21,19 @@ public class BudgetRepository {
 
     public void save(Budget budget) throws SQLException {
         String sql = """
-            INSERT OR REPLACE INTO budgets (id, category_id, limit_amount, period)
-            VALUES (?, ?, ?, ?)
+            INSERT OR REPLACE INTO budgets (id, name, category_id, limit_amount, period, closed)
+            VALUES (?, ?, ?, ?, ?, ?)
             """;
         
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, budget.id());
-            stmt.setString(2, budget.categoryId());
-            stmt.setString(3, budget.limitAmount() != null ? budget.limitAmount().toPlainString() : null);
-            stmt.setString(4, budget.period());
+            stmt.setString(2, budget.name());
+            stmt.setString(3, budget.categoryId());
+            stmt.setString(4, budget.limitAmount() != null ? budget.limitAmount().toString() : null);
+            stmt.setString(5, budget.period());
+            stmt.setInt(6, budget.closed() ? 1 : 0);
             
             stmt.executeUpdate();
         }
@@ -39,8 +41,8 @@ public class BudgetRepository {
 
     public void saveAll(List<Budget> budgets) throws SQLException {
         String sql = """
-            INSERT OR REPLACE INTO budgets (id, category_id, limit_amount, period)
-            VALUES (?, ?, ?, ?)
+            INSERT OR REPLACE INTO budgets (id, name, category_id, limit_amount, period, closed)
+            VALUES (?, ?, ?, ?, ?, ?)
             """;
             
         try (Connection conn = connectionFactory.getConnection();
@@ -50,9 +52,11 @@ public class BudgetRepository {
             try {
                 for (Budget budget : budgets) {
                     stmt.setString(1, budget.id());
-                    stmt.setString(2, budget.categoryId());
-                    stmt.setString(3, budget.limitAmount() != null ? budget.limitAmount().toPlainString() : null);
-                    stmt.setString(4, budget.period());
+                    stmt.setString(2, budget.name());
+                    stmt.setString(3, budget.categoryId());
+                    stmt.setString(4, budget.limitAmount() != null ? budget.limitAmount().toString() : null);
+                    stmt.setString(5, budget.period());
+                    stmt.setInt(6, budget.closed() ? 1 : 0);
                     stmt.addBatch();
                 }
                 stmt.executeBatch();
@@ -97,12 +101,15 @@ public class BudgetRepository {
     }
 
     private Budget mapResultSet(ResultSet rs) throws SQLException {
-        String limitAmountStr = rs.getString("limit_amount");
+        String limitStr = rs.getString("limit_amount");
+        BigDecimal limit = limitStr != null ? new BigDecimal(limitStr) : null;
         return new Budget(
             rs.getString("id"),
+            rs.getString("name"),
             rs.getString("category_id"),
-            limitAmountStr != null ? new BigDecimal(limitAmountStr) : BigDecimal.ZERO,
-            rs.getString("period")
+            limit,
+            rs.getString("period"),
+            rs.getInt("closed") == 1
         );
     }
 }

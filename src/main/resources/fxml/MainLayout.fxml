@@ -15,10 +15,9 @@
                 </padding>
                 
                 <Button fx:id="btnDashboard" text="Dashboard" styleClass="nav-button" maxWidth="Infinity" onAction="#showDashboard"/>
-                <Button fx:id="btnSync" text="Synchronization" styleClass="nav-button" maxWidth="Infinity" onAction="#showSync"/>
                 
                 <Button fx:id="btnTransactions" text="Transactions" styleClass="nav-button" maxWidth="Infinity" onAction="#showTransactions"/>
-                <Button text="Budgets" styleClass="nav-button" maxWidth="Infinity" disable="true"/>
+                <Button fx:id="btnBudgets" text="Budgets" styleClass="nav-button" maxWidth="Infinity" onAction="#showBudgets"/>
                 <Button text="Analytics" styleClass="nav-button" maxWidth="Infinity" disable="true"/>
             </VBox>
         </VBox>

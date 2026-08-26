@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20" styleClass="content-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.controllers.SettingsController">
+    <Label text="Settings" styleClass="app-title" style="-fx-text-fill: #2b2b2b; -fx-padding: 0;"/>
+    
+    <VBox spacing="10" styleClass="widget-card" maxWidth="600">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+        
+        <Label text="BudgetBakers API Key" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <Label text="Enter your new API key below. You can generate a new one from your BudgetBakers web dashboard." wrapText="true" style="-fx-text-fill: #757575;"/>
+        
+        <PasswordField fx:id="txtApiKey" promptText="Paste your API key here..." style="-fx-pref-width: 400; -fx-padding: 8;"/>
+        
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Button text="Save Key" onAction="#saveKey" style="-fx-padding: 8 15; -fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            <Label fx:id="lblStatus" text="" style="-fx-text-fill: #4CAF50; -fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
+</VBox>

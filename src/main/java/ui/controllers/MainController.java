@@ -12,10 +12,12 @@ public class MainController {
     @FXML private Button btnDashboard;
     @FXML private Button btnTransactions;
     @FXML private Button btnBudgets;
+    @FXML private Button btnSettings;
     
     private Parent dashboardView;
     private Parent transactionsView;
     private Parent budgetsView;
+    private Parent settingsView;
     
     @FXML
     public void initialize() {
@@ -44,10 +46,18 @@ public class MainController {
         contentArea.getChildren().setAll(budgetsView);
     }
     
+    @FXML
+    private void showSettings() {
+        setActiveButton(btnSettings);
+        settingsView = ViewLoader.loadView("/fxml/Settings.fxml");
+        contentArea.getChildren().setAll(settingsView);
+    }
+    
     private void setActiveButton(Button activeButton) {
         btnDashboard.getStyleClass().remove("active");
         btnTransactions.getStyleClass().remove("active");
         btnBudgets.getStyleClass().remove("active");
+        btnSettings.getStyleClass().remove("active");
         activeButton.getStyleClass().add("active");
     }
 }

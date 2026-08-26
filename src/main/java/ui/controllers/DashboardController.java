@@ -36,6 +36,7 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
     private SynchronizationService syncService;
+    private static boolean initialSyncDone = false;
 
     public DashboardController() {
         this.dashboardService = new DashboardService();
@@ -62,6 +63,7 @@ public class DashboardController {
                         apiConfig.saveApiKey(result.get());
                         setupServices(apiConfig);
                         loadData();
+                        initialSyncDone = true;
                     } else {
                         if (lblSyncStatus != null) lblSyncStatus.setText("API Key missing. Operating offline.");
                         fetchAndDisplayData();
@@ -69,7 +71,12 @@ public class DashboardController {
                 });
             } else {
                 setupServices(apiConfig);
-                loadData();
+                if (!initialSyncDone) {
+                    initialSyncDone = true;
+                    loadData();
+                } else {
+                    fetchAndDisplayData();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

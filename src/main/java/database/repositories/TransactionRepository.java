@@ -145,4 +145,41 @@ public class TransactionRepository {
             cDate
         );
     }
+
+    public List<models.MonthlyTrendRecord> getMonthlyTrends(int monthsBack) throws SQLException {
+        List<models.MonthlyTrendRecord> trends = new ArrayList<>();
+        String sql = """
+            SELECT 
+                strftime('%Y-%m', transaction_date) as year_month,
+                SUM(CASE WHEN amount > 0 THEN amount ELSE 0 END) as income,
+                SUM(CASE WHEN amount < 0 THEN ABS(amount) ELSE 0 END) as expenses
+            FROM transactions
+            WHERE is_transfer = 0
+            GROUP BY year_month
+            ORDER BY year_month DESC
+            LIMIT ?
+            """;
+        
+        try (Connection conn = connectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
+            stmt.setInt(1, monthsBack);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String ym = rs.getString("year_month");
+                    if (ym == null) continue;
+                    
+                    String incStr = rs.getString("income");
+                    String expStr = rs.getString("expenses");
+                    
+                    BigDecimal inc = incStr != null ? new BigDecimal(incStr) : BigDecimal.ZERO;
+                    BigDecimal exp = expStr != null ? new BigDecimal(expStr) : BigDecimal.ZERO;
+                    
+                    trends.add(new models.MonthlyTrendRecord(ym, inc, exp));
+                }
+            }
+        }
+        java.util.Collections.reverse(trends);
+        return trends;
+    }
 }

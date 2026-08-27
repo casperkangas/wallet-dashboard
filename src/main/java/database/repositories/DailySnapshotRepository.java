@@ -126,4 +126,26 @@ public class DailySnapshotRepository {
             monthlyExpensesStr != null ? new BigDecimal(monthlyExpensesStr) : BigDecimal.ZERO
         );
     }
+
+    public List<DailySnapshot> getHistoricalSnapshots(int daysBack) throws SQLException {
+        List<DailySnapshot> snapshots = new ArrayList<>();
+        String sql = """
+            SELECT * FROM daily_snapshots
+            ORDER BY snapshot_date DESC
+            LIMIT ?
+            """;
+            
+        try (Connection conn = connectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
+            stmt.setInt(1, daysBack);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    snapshots.add(mapResultSet(rs));
+                }
+            }
+        }
+        java.util.Collections.reverse(snapshots);
+        return snapshots;
+    }
 }

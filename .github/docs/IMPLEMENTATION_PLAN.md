@@ -123,11 +123,11 @@
 
 ## Phase 6 — Analytics
 
-- [ ] Analytics engine service
-- [ ] Savings rate calculation
-- [ ] Financial independence ratio calculation
-- [ ] Expense volatility calculation (standard deviation)
-- [ ] Emergency fund ratio calculation
+- [x] Analytics engine service
+- [x] Savings rate calculation
+- [x] Financial independence ratio calculation
+- [x] Expense volatility calculation (standard deviation)
+- [x] Emergency fund ratio calculation
 - [ ] Analytics dashboard screen integration
 
 ---

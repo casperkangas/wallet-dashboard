@@ -12,6 +12,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import models.Account;
@@ -47,6 +48,7 @@ public class AnalyticsController {
     @FXML private LineChart<String, Number> netWorthChart;
     @FXML private BarChart<String, Number> incomeExpenseChart;
     @FXML private PieChart categoryPieChart;
+    @FXML private ListView<String> categoryListView;
 
     private AnalyticsService analyticsService;
     private TransactionRepository transactionRepository;
@@ -84,9 +86,15 @@ public class AnalyticsController {
                 // Fetch all categories to identify "Investments"
                 List<Category> allCategories = categoryRepository.findAll();
                 List<String> investmentCategoryIds = new ArrayList<>();
+                List<String> rootInvestmentIds = new ArrayList<>();
                 for (Category c : allCategories) {
-                    if ((c.name() != null && c.name().equalsIgnoreCase("Investments")) || 
-                        (c.parentId() != null && c.parentId().equalsIgnoreCase("investments"))) {
+                    if (c.name() != null && c.name().toLowerCase().contains("invest")) {
+                        rootInvestmentIds.add(c.id());
+                        investmentCategoryIds.add(c.id());
+                    }
+                }
+                for (Category c : allCategories) {
+                    if (c.parentId() != null && rootInvestmentIds.contains(c.parentId())) {
                         investmentCategoryIds.add(c.id());
                     }
                 }
@@ -139,41 +147,48 @@ public class AnalyticsController {
                 // Pie chart data and investment spending adjustment
                 List<Transaction> allTransactions = transactionRepository.findAll();
                 LocalDate now = LocalDate.now();
-                Map<String, BigDecimal> categorySpending = new HashMap<>();
-                BigDecimal totalSpending = BigDecimal.ZERO;
-                BigDecimal investmentSpending = BigDecimal.ZERO;
+                Map<String, BigDecimal> categoryNetFlow = new HashMap<>();
                 
                 for (Transaction t : allTransactions) {
                     if (t.transactionDate() != null && t.transactionDate().getYear() == now.getYear() && t.transactionDate().getMonthValue() == now.getMonthValue()) {
-                        if (!t.isTransfer() && t.amount().compareTo(BigDecimal.ZERO) < 0) {
-                            String categoryName = "Unknown";
-                            if (t.categoryId() != null && !t.categoryId().isEmpty()) {
-                                try {
-                                    Optional<Category> catOpt = categoryRepository.findById(t.categoryId());
-                                    if (catOpt.isPresent()) {
-                                        categoryName = catOpt.get().name();
-                                    }
-                                } catch (Exception e) {}
-                            }
-                            
-                            BigDecimal amt = t.amount().abs();
-                            
-                            // Adjust for investments
-                            if (investmentCategoryIds.contains(t.categoryId())) {
-                                investmentSpending = investmentSpending.add(amt);
-                            } else if (!categoryName.equalsIgnoreCase("Transfer") && !categoryName.equalsIgnoreCase("Transfers")) {
-                                // Exclude Transfer categories and Investment categories explicitly from pie chart
-                                categorySpending.put(categoryName, categorySpending.getOrDefault(categoryName, BigDecimal.ZERO).add(amt));
-                                totalSpending = totalSpending.add(amt);
-                            }
+                        if (!t.isTransfer()) {
+                            String catId = (t.categoryId() != null && !t.categoryId().isEmpty()) ? t.categoryId() : "UNGROUPED";
+                            BigDecimal amt = t.amount() != null ? t.amount() : BigDecimal.ZERO;
+                            categoryNetFlow.put(catId, categoryNetFlow.getOrDefault(catId, BigDecimal.ZERO).add(amt));
                         }
                     }
                 }
 
-                BigDecimal adjustedExpenses = currentMonthExpenses.subtract(investmentSpending);
-                if (adjustedExpenses.compareTo(BigDecimal.ZERO) < 0) adjustedExpenses = BigDecimal.ZERO;
-                
-                BigDecimal savingsRate = analyticsService.calculateSavingsRate(currentMonthIncome, adjustedExpenses);
+                Map<String, BigDecimal> categorySpending = new HashMap<>();
+                BigDecimal totalSpending = BigDecimal.ZERO;
+                BigDecimal investmentSpending = BigDecimal.ZERO;
+
+                for (Map.Entry<String, BigDecimal> entry : categoryNetFlow.entrySet()) {
+                    BigDecimal net = entry.getValue();
+                    if (net.compareTo(BigDecimal.ZERO) < 0) {
+                        BigDecimal expenseAmt = net.abs();
+                        String catId = entry.getKey();
+                        
+                        String categoryName = "Unknown";
+                        if (!"UNGROUPED".equals(catId)) {
+                            try {
+                                Optional<Category> catOpt = categoryRepository.findById(catId);
+                                if (catOpt.isPresent()) {
+                                    categoryName = catOpt.get().name();
+                                }
+                            } catch (Exception e) {}
+                        }
+
+                        if (investmentCategoryIds.contains(catId)) {
+                            investmentSpending = investmentSpending.add(expenseAmt);
+                        } else if (!categoryName.equalsIgnoreCase("Transfer") && !categoryName.equalsIgnoreCase("Transfers")) {
+                            categorySpending.put(categoryName, categorySpending.getOrDefault(categoryName, BigDecimal.ZERO).add(expenseAmt));
+                            totalSpending = totalSpending.add(expenseAmt);
+                        }
+                    }
+                }
+
+                BigDecimal savingsRate = analyticsService.calculateSavingsRate(currentMonthIncome, currentMonthExpenses);
                 BigDecimal emergencyFundRatio = analyticsService.calculateEmergencyFundRatio(cash, last6Months); // Use 6 months for averages
                 
                 // Estimate annual expenses
@@ -260,9 +275,20 @@ public class AnalyticsController {
                     }
                     
                     lblPieChartTitle.setText(String.format("Spending by Category (Current Month) - Total: $%.2f", finalTotalSpending.doubleValue()));
+                    
+                    List<Map.Entry<String, BigDecimal>> sortedCategories = new ArrayList<>(categorySpending.entrySet());
+                    sortedCategories.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+                    
                     categoryPieChart.getData().clear();
-                    for (Map.Entry<String, BigDecimal> entry : categorySpending.entrySet()) {
+                    if (categoryListView != null) {
+                        categoryListView.getItems().clear();
+                    }
+                    
+                    for (Map.Entry<String, BigDecimal> entry : sortedCategories) {
                         categoryPieChart.getData().add(new PieChart.Data(entry.getKey(), entry.getValue().doubleValue()));
+                        if (categoryListView != null) {
+                            categoryListView.getItems().add(entry.getKey() + ": $" + String.format("%.2f", entry.getValue().doubleValue()));
+                        }
                     }
                 });
                 

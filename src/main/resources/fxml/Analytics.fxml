@@ -42,7 +42,7 @@
         <HBox spacing="20" prefHeight="400">
             <VBox styleClass="widget-card" HBox.hgrow="ALWAYS" prefWidth="500">
                 <Label text="Net Worth Over Time" styleClass="widget-title"/>
-                <LineChart fx:id="netWorthChart" legendVisible="false" VBox.vgrow="ALWAYS">
+                <LineChart fx:id="netWorthChart" legendVisible="false" animated="false" VBox.vgrow="ALWAYS">
                     <xAxis>
                         <CategoryAxis label="Date" side="BOTTOM" />
                     </xAxis>
@@ -54,7 +54,7 @@
             
             <VBox styleClass="widget-card" HBox.hgrow="ALWAYS" prefWidth="500">
                 <Label text="Cash Flow (Last 3 Months)" styleClass="widget-title"/>
-                <BarChart fx:id="incomeExpenseChart" legendVisible="false" VBox.vgrow="ALWAYS">
+                <BarChart fx:id="incomeExpenseChart" legendVisible="false" animated="false" VBox.vgrow="ALWAYS">
                     <xAxis>
                         <CategoryAxis label="Month" side="BOTTOM" />
                     </xAxis>
@@ -69,7 +69,10 @@
         <HBox spacing="20" prefHeight="400">
             <VBox styleClass="widget-card" HBox.hgrow="ALWAYS">
                 <Label fx:id="lblPieChartTitle" text="Spending by Category (Current Month)" styleClass="widget-title"/>
-                <PieChart fx:id="categoryPieChart" VBox.vgrow="ALWAYS"/>
+                <HBox spacing="10" VBox.vgrow="ALWAYS">
+                    <PieChart fx:id="categoryPieChart" animated="false" HBox.hgrow="ALWAYS"/>
+                    <ListView fx:id="categoryListView" prefWidth="250" HBox.hgrow="NEVER" style="-fx-background-color: transparent;"/>
+                </HBox>
             </VBox>
         </HBox>
     </VBox>

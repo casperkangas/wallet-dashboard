@@ -150,11 +150,25 @@ public class TransactionRepository {
         List<models.MonthlyTrendRecord> trends = new ArrayList<>();
         String sql = """
             SELECT 
-                strftime('%Y-%m', transaction_date) as year_month,
-                SUM(CASE WHEN amount > 0 THEN amount ELSE 0 END) as income,
-                SUM(CASE WHEN amount < 0 THEN ABS(amount) ELSE 0 END) as expenses
-            FROM transactions
-            WHERE is_transfer = 0
+                year_month,
+                SUM(CASE WHEN category_net > 0 AND is_excluded = 0 THEN category_net ELSE 0 END) as income,
+                SUM(CASE WHEN category_net < 0 AND is_excluded = 0 THEN ABS(category_net) ELSE 0 END) as expenses
+            FROM (
+                SELECT 
+                    strftime('%Y-%m', t.transaction_date) as year_month,
+                    IFNULL(t.category_id, 'UNGROUPED') as cat_id,
+                    SUM(t.amount) as category_net,
+                    CASE 
+                        WHEN LOWER(IFNULL(c.name, '')) LIKE '%invest%' OR LOWER(IFNULL(parent_c.name, '')) LIKE '%invest%' THEN 1 
+                        WHEN LOWER(IFNULL(c.name, '')) LIKE '%transfer%' OR LOWER(IFNULL(parent_c.name, '')) LIKE '%transfer%' THEN 1
+                        ELSE 0 
+                    END as is_excluded
+                FROM transactions t
+                LEFT JOIN categories c ON t.category_id = c.id
+                LEFT JOIN categories parent_c ON c.parent_id = parent_c.id
+                WHERE t.is_transfer = 0
+                GROUP BY year_month, t.category_id
+            )
             GROUP BY year_month
             ORDER BY year_month DESC
             LIMIT ?

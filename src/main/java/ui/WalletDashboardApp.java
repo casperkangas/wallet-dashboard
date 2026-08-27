@@ -23,7 +23,7 @@ public class WalletDashboardApp extends Application {
             dbManager.initialize();
             
             Parent root = ViewLoader.loadView("/fxml/MainLayout.fxml");
-            Scene scene = new Scene(root, 1000, 700);
+            Scene scene = new Scene(root, 1280, 800);
             scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
             
             // Set App Icon

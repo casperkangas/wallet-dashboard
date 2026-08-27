@@ -28,7 +28,7 @@
             </VBox>
             <VBox styleClass="widget-card" HBox.hgrow="ALWAYS">
                 <Label text="Expense Volatility" styleClass="widget-title"/>
-                <Label fx:id="lblVolatility" text="$0.00" styleClass="widget-value"/>
+                <Label fx:id="lblVolatility" text="0.00" styleClass="widget-value"/>
                 <Label text="Std Dev (Last 6 Months)" style="-fx-text-fill: #9e9e9e; -fx-font-size: 12px;"/>
             </VBox>
         </HBox>

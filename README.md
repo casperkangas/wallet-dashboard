@@ -89,60 +89,60 @@ The project is designed to be:
 
 ---
 
+## Setup and Installation
+
+1. Launch the application.
+2. The application will detect if you are a first-time user.
+3. You will be prompted to securely enter your **BudgetBakers API Key**. (You can generate one from your BudgetBakers web dashboard).
+4. The key will be securely saved to your operating system's native secure preferences.
+5. The application will perform its initial synchronization and build your dashboard!
+
+---
+
 ## Project structure
 
 ```text
 wallet-dashboard/
 
-├── docs/
-│
-├── screenshots/
+├── .github/
+│   └── docs/                 # Contains Technical Specs and Implementation Plans
 │
 ├── src/
-│
 │   ├── main/
-│   │
 │   │   ├── java/
-│   │   │
 │   │   │   ├── api/
-│   │   │   ├── analytics/
 │   │   │   ├── database/
-│   │   │   ├── forecasting/
 │   │   │   ├── models/
 │   │   │   ├── services/
-│   │   │   ├── settings/
 │   │   │   ├── sync/
 │   │   │   ├── ui/
 │   │   │   └── utils/
-│   │
-│   └── resources/
+│   │   └── resources/
+│   │       ├── css/
+│   │       ├── fxml/
+│   │       └── images/
+│   └── test/                 # JUnit Test Suite
 │
-├── tests/
-│
-├── README.md
-│
-└── PROJECT_SPEC.md
+├── pom.xml
+└── README.md
 ```
 
 ---
 
 ## Development roadmap
 
-### Version 0.1
+### ✅ Version 0.1
+- [x] API integration
 
-- API integration
+### ✅ Version 0.2
+- [x] SQLite implementation
 
-### Version 0.2
+### ✅ Version 0.3
+- [x] Synchronization engine
 
-- SQLite implementation
-
-### Version 0.3
-
-- Synchronization engine
-
-### Version 0.4
-
-- Dashboard implementation
+### ✅ Version 0.4
+- [x] Dashboard, Budgets, and Transactions implementation
+- [x] Secure API Key setup and persistence
 
 ### Version 0.5
 

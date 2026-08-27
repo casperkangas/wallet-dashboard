@@ -18,7 +18,7 @@
                 
                 <Button fx:id="btnTransactions" text="Transactions" styleClass="nav-button" maxWidth="Infinity" onAction="#showTransactions"/>
                 <Button fx:id="btnBudgets" text="Budgets" styleClass="nav-button" maxWidth="Infinity" onAction="#showBudgets"/>
-                <Button text="Analytics" styleClass="nav-button" maxWidth="Infinity" disable="true"/>
+                <Button fx:id="btnAnalytics" text="Analytics" styleClass="nav-button" maxWidth="Infinity" onAction="#showAnalytics"/>
                 
                 <Region VBox.vgrow="ALWAYS" />
                 

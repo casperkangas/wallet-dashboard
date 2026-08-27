@@ -84,3 +84,32 @@
 .over-budget .bar {
     -fx-background-color: #F44336;
 }
+
+/* Charts Styling */
+.chart {
+    -fx-padding: 10px;
+}
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+.chart-vertical-grid-lines {
+    -fx-stroke: #f0f0f0;
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: #f0f0f0;
+}
+.default-color0.chart-series-line {
+    -fx-stroke: #2196F3;
+    -fx-stroke-width: 3px;
+}
+.default-color0.chart-line-symbol {
+    -fx-background-color: #2196F3, white;
+    -fx-background-radius: 5px;
+    -fx-padding: 4px;
+}
+.default-color0.chart-bar {
+    -fx-bar-fill: #4CAF50; /* Income Green */
+}
+.default-color1.chart-bar {
+    -fx-bar-fill: #F44336; /* Expenses Red */
+}

@@ -113,10 +113,10 @@
 
 ## Phase 5 — Charts
 
-- [ ] Net worth over time (line chart)
-- [ ] Monthly expenses (bar chart)
-- [ ] Monthly income (bar chart)
-- [ ] Spending by category (pie chart)
+- [x] Net worth over time (line chart)
+- [x] Monthly expenses (bar chart)
+- [x] Monthly income (bar chart)
+- [x] Spending by category (pie chart)
 - [ ] Spending heatmap
 
 ---
@@ -128,7 +128,7 @@
 - [x] Financial independence ratio calculation
 - [x] Expense volatility calculation (standard deviation)
 - [x] Emergency fund ratio calculation
-- [ ] Analytics dashboard screen integration
+- [x] Analytics dashboard screen integration
 
 ---
 

@@ -11,22 +11,27 @@
         
         <!-- KPI Cards -->
         <HBox spacing="20">
-            <VBox styleClass="widget-card" HBox.hgrow="ALWAYS">
+            <VBox fx:id="cardSavingsRate" styleClass="widget-card" HBox.hgrow="ALWAYS">
                 <Label text="Savings Rate" styleClass="widget-title"/>
                 <Label fx:id="lblSavingsRate" text="0.0%" styleClass="widget-value"/>
                 <Label text="Current month" style="-fx-text-fill: #9e9e9e; -fx-font-size: 12px;"/>
             </VBox>
-            <VBox styleClass="widget-card" HBox.hgrow="ALWAYS">
+            <VBox fx:id="cardEmergencyFund" styleClass="widget-card" HBox.hgrow="ALWAYS">
                 <Label text="Emergency Fund" styleClass="widget-title"/>
                 <Label fx:id="lblEmergencyFund" text="0.0 Months" styleClass="widget-value"/>
                 <Label text="Cash / Avg Expenses" style="-fx-text-fill: #9e9e9e; -fx-font-size: 12px;"/>
             </VBox>
-            <VBox styleClass="widget-card" HBox.hgrow="ALWAYS">
+            <VBox fx:id="cardFiRatio" styleClass="widget-card" HBox.hgrow="ALWAYS">
                 <Label text="FI Ratio" styleClass="widget-title"/>
                 <Label fx:id="lblFiRatio" text="0.0%" styleClass="widget-value"/>
                 <Label text="Investments / Annual Exp" style="-fx-text-fill: #9e9e9e; -fx-font-size: 12px;"/>
             </VBox>
-            <VBox styleClass="widget-card" HBox.hgrow="ALWAYS">
+            <VBox fx:id="cardInvestments" styleClass="widget-card" HBox.hgrow="ALWAYS">
+                <Label text="Investments" styleClass="widget-title"/>
+                <Label fx:id="lblInvestments" text="0.00" styleClass="widget-value"/>
+                <Label text="Current month" style="-fx-text-fill: #9e9e9e; -fx-font-size: 12px;"/>
+            </VBox>
+            <VBox fx:id="cardVolatility" styleClass="widget-card" HBox.hgrow="ALWAYS">
                 <Label text="Expense Volatility" styleClass="widget-title"/>
                 <Label fx:id="lblVolatility" text="0.00" styleClass="widget-value"/>
                 <Label text="Std Dev (Last 6 Months)" style="-fx-text-fill: #9e9e9e; -fx-font-size: 12px;"/>
@@ -48,8 +53,8 @@
             </VBox>
             
             <VBox styleClass="widget-card" HBox.hgrow="ALWAYS" prefWidth="500">
-                <Label text="Income vs Expenses (Last 3 Months)" styleClass="widget-title"/>
-                <BarChart fx:id="incomeExpenseChart" VBox.vgrow="ALWAYS">
+                <Label text="Cash Flow (Last 3 Months)" styleClass="widget-title"/>
+                <BarChart fx:id="incomeExpenseChart" legendVisible="false" VBox.vgrow="ALWAYS">
                     <xAxis>
                         <CategoryAxis label="Month" side="BOTTOM" />
                     </xAxis>
@@ -63,7 +68,7 @@
         <!-- Charts Row 2 -->
         <HBox spacing="20" prefHeight="400">
             <VBox styleClass="widget-card" HBox.hgrow="ALWAYS">
-                <Label text="Spending by Category (Current Month)" styleClass="widget-title"/>
+                <Label fx:id="lblPieChartTitle" text="Spending by Category (Current Month)" styleClass="widget-title"/>
                 <PieChart fx:id="categoryPieChart" VBox.vgrow="ALWAYS"/>
             </VBox>
         </HBox>

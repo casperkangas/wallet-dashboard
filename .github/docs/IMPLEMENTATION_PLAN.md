@@ -117,7 +117,7 @@
 - [x] Monthly expenses (bar chart)
 - [x] Monthly income (bar chart)
 - [x] Spending by category (pie chart)
-- [ ] Spending heatmap
+- [ ] Spending heatmap (Deferred to v2.0)
 
 ---
 
